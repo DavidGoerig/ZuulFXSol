@@ -1,0 +1,3 @@
+First create a first page "select language"
+Après aller au menu principale (ou on peux lancer le jeu, et mettre un fichier de jeu)
+lancer le jeu nouvelle scène

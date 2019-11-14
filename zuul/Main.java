@@ -1,5 +1,8 @@
 package zuul;
 
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.util.Pair;
 /**
  *
  * @author rej
@@ -11,18 +14,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-    	String language;
-    	String country;
-    	// TODO improve error handling
-    	if (args.length != 2) {
-            language = "en";
-            country = "US";
-        } else {
-            language = args[0];
-            country = args[1];
-        }
-    	
-    	// Start specific game 
-        new zuul.mygame.MyGame(language, country).play();
+        Pair<String, String> langCountry = new Pair<>("en", "us");
+        new zuul.mygame.MyGame(langCountry.getKey(), langCountry.getValue()).play();
     }
 }

@@ -1,0 +1,5 @@
+room1, room 1, room2, null, null, null, object 1, 1
+room2, room 2, room3, null, null, null, object 2, 1
+room3, room 3, room4, null, null, null, object 3, 1
+room4, room 4, room5, null, null, null, object 4, 1
+room5, room 5, room1, null, null, null, object 5, 1

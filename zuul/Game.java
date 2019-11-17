@@ -1,5 +1,7 @@
 package zuul;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -9,6 +11,8 @@ import zuul.command.CommandWords;
 import zuul.command.Parser;
 import zuul.io.In;
 import zuul.io.Out;
+import zuul.roomcsv.RoomCsvChecker;
+import zuul.roomcsv.RoomCsvUploader;
 
 /**
  * This class is the main class of the "World of Zuul" application. "World of
@@ -27,7 +31,12 @@ import zuul.io.Out;
  * @version 2006.03.30
  */
 public abstract class Game {
+    /**
+     * Room file checker and file uploader
+     */
+    //public static final RoomCsvChecker roomCsvChecker;
 
+    public static final RoomCsvUploader roomCsvUploader = new RoomCsvUploader();
     /**
      * Delegate all output messages to out
      */
@@ -45,8 +54,11 @@ public abstract class Game {
     /**
      * The commands known to the game
      */
+
     public static CommandWords commands;
     private final Parser parser;
+
+    protected File inputFile = new File("/zuul/res/config_file/game1.csv");
 
     private Player player;
     protected List<Room> allRooms;
@@ -60,13 +72,41 @@ public abstract class Game {
      * @see java.util.Locale
      */
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public Game(String language, String country, CommandWords commands) {
+    public Game(String language, String country, CommandWords commands) throws IOException {
         // internationalise
         Locale currentLocale = new Locale(language, country);
         messages = ResourceBundle.getBundle("zuul.mygame.MessagesBundle", currentLocale);
         Game.commands = commands;
         parser = new Parser("zuul.mygame");
+        /*
+            Here Gui for Room creation -> in the Gui first compute the checker.
+         */
+        /*
+        Si file importé (bouton pressé):
+        if (!(roomCsvChecker.checkFile(givenFileFromGui)) {
+            Afficher le message d'erreure du fichier et ne pas changer de scene
+        }
+        else {
+            createRooms();
+            changer de scène vers Room modifier
+        }
+        Sinon juste lancer avec le fichier de base:
+         */
         createRooms();
+        //createRooms(inputFile); // ADD INTERFACE FOR CREATING ROOMS link, etc.
+        /*
+            Here Guy For player creation
+         */
+        if (allRooms == null || allRooms.size() < 1) {
+            // en vrai juste reboucler sur le panel pour créer les rooms ou choisir celui de base hihi
+            System.out.println("A problem occured. No rooms created.");
+            System.exit(0);
+        }
+        createPlayer("me"); // ADD INTERFACE FOR CREATING PLAYER
+        /*
+            Gere GUY for create Char
+         */
+        createCharacter();
     }
 
     /**
@@ -132,15 +172,24 @@ public abstract class Game {
         allRooms = all;
     }
 
+
+    protected void setInputFile(File inputFile) {
+        this.inputFile = inputFile;
+    }
+
     /*------------------ Game specific stuff ----------------------------*/
     /**
      * Create all the rooms and link their exits together.
      */
-    protected abstract void createRooms();
+    protected abstract void createRooms() throws IOException;
 
     /*
      * All the welcome messages
      */
     protected abstract List<String> getWelcomeStrings();
+
+    protected abstract void createPlayer(String playerName);
+
+    protected abstract void createCharacter();
 
 }

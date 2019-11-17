@@ -1,0 +1,5 @@
+outside, outside the university, null, theatre, lab, pub, notebook, 2, umbrella, 3
+theatre, in a lecture theatre, null, null, null, outside
+pub, in the campus pub, null, outside, null, null, beer, 1, water, 1
+lab, in a computing lab, outside, office, null, null, laptop, 9
+admin, in the computing admin office, null, null, null, lab

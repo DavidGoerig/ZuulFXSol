@@ -24,6 +24,8 @@ public class Room
 {
     /** Description of the room */
     final private String description;
+    /** Name of the room */
+    final private String name;
     /** Exits from the room */
     final private Map<String, Room> exits;   
     /** Items in the room */
@@ -37,12 +39,14 @@ public class Room
      * "an open court yard".
      * @param description The room's description.
      */
-    public Room(String description) 
+    public Room(String name, String description)
     {
+        this.name = name;
         this.description = description;
         exits = new HashMap<>();
         items = new HashMap<>();
         characters = new HashMap<>();
+        System.out.println(name + description);
     }
 
     /**
@@ -194,5 +198,9 @@ public class Room
         for (Item it : items.values()) {
             it.execute();
         }
+    }
+
+    public String getName() {
+        return name;
     }
 }

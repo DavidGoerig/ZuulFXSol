@@ -1,8 +1,7 @@
 package zuul.mygame;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 import zuul.Character;
 import zuul.Game;
@@ -11,14 +10,17 @@ import zuul.Room;
 
 public class MyGame extends Game {
 
-    public MyGame(String language, String country) {
+    public MyGame(String language, String country) throws IOException {
 	super(language, country, new zuul.mygame.CommandWords());
     }
 	
     /** Create all the rooms and link their exits together.  */
     @Override
-    protected void createRooms() {
+    protected void createRooms() throws IOException {
         Room outside, theatre, pub, lab, office;
+        allRooms = roomCsvUploader.createRoomsFromCsv(inputFile);
+        setAllRooms(allRooms);
+        /*
         allRooms = new ArrayList<>();
 
         // create the rooms
@@ -41,18 +43,9 @@ public class MyGame extends Game {
         lab.setExits(outside, office, null, null);
         office.setExits(null, null, null, lab);
 
-        // add a character
-        // here I create a new anonymous class that is a subclass of Character with a
-        // different execute method
-        lab.addCharacter(new Character(messages.getString("Cecilia"), lab) {
-            @Override
-            public void execute() {
-                randomMove();
-            }
-        });
-
         setAllRooms(allRooms);
-        setPlayer(new Player(messages.getString("me"), outside));  // start game outside
+
+         */
     }
     
     @Override
@@ -65,5 +58,28 @@ public class MyGame extends Game {
     	rv.add("");
     	rv.addAll(getPlayer().getDetails());
     	return rv;
+    }
+
+    @Override
+    protected void createPlayer(String playerName) {
+        // le foutre dans une pièce random
+        Random r = new Random();
+        Room randomRoom = allRooms.stream().skip(r.nextInt(allRooms.size()-1)).findFirst().get();
+        setPlayer(new Player(messages.getString(playerName), randomRoom));  // start game outside
+    }
+
+    @Override
+    protected void createCharacter() {
+        // add a character
+        // here I create a new anonymous class that is a subclass of Character with a
+        // different execute method
+        /*lab.addCharacter(new Character(messages.getString("Cecilia"), lab) {
+            @Override
+            public void execute() {
+                randomMove();
+            }
+        });
+
+         */
     }
 }

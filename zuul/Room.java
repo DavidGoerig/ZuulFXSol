@@ -46,7 +46,6 @@ public class Room
         exits = new HashMap<>();
         items = new HashMap<>();
         characters = new HashMap<>();
-        System.out.println(name + description);
     }
 
     /**

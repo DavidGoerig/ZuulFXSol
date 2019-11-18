@@ -17,7 +17,7 @@ public class MyGame extends Game {
     /** Create all the rooms and link their exits together.  */
     @Override
     protected void createRooms() throws IOException {
-        Room outside, theatre, pub, lab, office;
+        //Room outside, theatre, pub, lab, office;
         allRooms = roomCsvUploader.createRoomsFromCsv(inputFile);
         setAllRooms(allRooms);
         /*
@@ -63,8 +63,12 @@ public class MyGame extends Game {
     @Override
     protected void createPlayer(String playerName) {
         // le foutre dans une pièce random
-        Random r = new Random();
-        Room randomRoom = allRooms.stream().skip(r.nextInt(allRooms.size()-1)).findFirst().get();
+        //TODO ENLEVER CETTE BOUSE DE FONCTION RANDOM ISSOU
+
+        Map.Entry<String, Room> entry = allRooms.entrySet().iterator().next();
+        Room randomRoom = entry.getValue();
+        //Random r = new Random();
+        //Room randomRoom = allRooms.stream().skip(r.nextInt(allRooms.size()-1)).findFirst().get();
         setPlayer(new Player(messages.getString(playerName), randomRoom));  // start game outside
     }
 

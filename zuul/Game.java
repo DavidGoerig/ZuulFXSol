@@ -2,9 +2,7 @@ package zuul;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import zuul.command.Command;
 import zuul.command.CommandWords;
@@ -61,7 +59,7 @@ public abstract class Game {
     protected File inputFile = new File("/zuul/res/config_file/game1.csv");
 
     private Player player;
-    protected List<Room> allRooms;
+    protected HashMap<String, Room> allRooms;
 
     /**
      * Create the game and initialise its internal map.
@@ -120,9 +118,9 @@ public abstract class Game {
         boolean finished = false;
         while (!finished) {
             Command command = parser.getCommand();
-            allRooms.stream().forEach((r) -> {
-                r.process();
-            });
+            for(Map.Entry<String, Room> entry : allRooms.entrySet()) {
+                entry.getValue().process();
+            }
             finished = processCommand(command);
         }
         Game.out.println(messages.getString("goodbye")); //Thank you for playing.  Good bye.
@@ -168,7 +166,7 @@ public abstract class Game {
      * The game needs to know all the rooms so that it can iterate through them
      * @param all The list of rooms
      */
-    protected void setAllRooms(List<Room> all) {
+    protected void setAllRooms(HashMap<String, Room> all) {
         allRooms = all;
     }
 

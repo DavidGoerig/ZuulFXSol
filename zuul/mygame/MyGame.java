@@ -7,6 +7,7 @@ import zuul.Character;
 import zuul.Game;
 import zuul.Player;
 import zuul.Room;
+import zuul.roomcsv.RoomCsvChecker;
 
 public class MyGame extends Game {
 
@@ -18,6 +19,11 @@ public class MyGame extends Game {
     @Override
     protected void createRooms() throws IOException {
         //Room outside, theatre, pub, lab, office;
+        RoomCsvChecker check = new RoomCsvChecker();
+        if (!check.checkFile()) {
+            System.out.println(check.getErrorMessage());
+            System.exit(0);
+        }
         allRooms = roomCsvUploader.createRoomsFromCsv(inputFile);
         setAllRooms(allRooms);
         /*
@@ -47,7 +53,7 @@ public class MyGame extends Game {
 
          */
     }
-    
+
     @Override
     protected List<String> getWelcomeStrings() {
     	List<String> rv = new LinkedList<>();

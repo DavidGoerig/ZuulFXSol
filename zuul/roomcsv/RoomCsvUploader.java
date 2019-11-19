@@ -22,12 +22,10 @@ public class RoomCsvUploader {
     }
 
     private HashMap<String, Room> createRooms(Supplier<Stream<String>> supplier) {
-        List<Pair> list = new ArrayList<>();
         HashMap<String, Room> roomList = new HashMap<>();
-        list = supplier.get().map(line -> {
+        List<Pair> list = supplier.get().map(line -> {
             String[] str = line.split(",");
-            Pair pair = new Pair(str[0], str[1]);
-            return pair;
+            return new Pair(str[0], str[1]);
         }).collect(Collectors.toList());
         list.stream()
                 .forEach(item->roomList.put(item.getKey().toString(),
@@ -46,9 +44,7 @@ public class RoomCsvUploader {
     }
 
     private void addObjects(Supplier<Stream<String>> supplier, HashMap<String, Room> allRooms) {
-        HashMap<String, List<Pair>> objects = new HashMap<>();
-        List<String[]> list = new ArrayList<>();
-        list = supplier.get()
+        List<String[]> list = supplier.get()
                 .filter(line -> line.split(",").length > 6)
                 .map(line -> {
             String[] str = line.split(",");
@@ -68,8 +64,7 @@ public class RoomCsvUploader {
     }
 
     private void initialiseExits(Supplier<Stream<String>> supplier, HashMap<String, Room> allRooms) {
-        List<String[]> list = new ArrayList<>();
-        list = supplier.get().map(line -> {
+        List<String[]> list = supplier.get().map(line -> {
             String[] str = line.split(",");
             return new String[]{str[0], str[2], str[3], str[4], str[5]};
         }).collect(Collectors.toList());

@@ -1,4 +1,4 @@
-package app;
+package zuul.controllers;
 
 public class Timer implements Runnable {
 

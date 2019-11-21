@@ -1,4 +1,4 @@
-package app;
+package zuul.controllers;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,10 +17,13 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import zuul.model.Food;
+import zuul.model.Game;
+import zuul.model.Snake;
 import zuul.views.MenuView;
 import zuul.views.GameView;
 import zuul.views.HighScoreView;
-import app.model.*;
+import zuul.model.*;
 
 public class MainController {
     public static Stage primaryStage = new Stage();

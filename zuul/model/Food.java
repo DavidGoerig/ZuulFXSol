@@ -1,4 +1,4 @@
-package app.model;
+package zuul.model;
 
 import javafx.scene.image.Image;
 import java.awt.*;

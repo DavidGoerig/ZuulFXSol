@@ -1,6 +1,6 @@
 package zuul.views;
 
-import app.model.HighScore;
+import zuul.model.HighScore;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -14,7 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import app.MainController;
+import zuul.controllers.MainController;
 
 public class HighScoreView {
   public HighScoreView(ScrollPane sp, Pane root) {

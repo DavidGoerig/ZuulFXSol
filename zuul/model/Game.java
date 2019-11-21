@@ -1,4 +1,4 @@
-package app.model;
+package zuul.model;
 
 public class Game {
     private int width;

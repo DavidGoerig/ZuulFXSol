@@ -1,4 +1,4 @@
-package app.model;
+package zuul.model;
 
 import java.awt.*;
 import java.util.ArrayList;

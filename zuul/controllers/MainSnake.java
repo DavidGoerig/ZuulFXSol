@@ -1,4 +1,4 @@
-package app;
+package zuul.controllers;
 
 import javafx.application.Application;
 import javafx.stage.Stage;

@@ -10,7 +10,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import java.awt.Point;
 
-import app.model.*;
+import zuul.model.Food;
+import zuul.model.Game;
+import zuul.model.HighScore;
+import zuul.model.Snake;
 
 public class GameView {
     private Canvas gridCanvas;

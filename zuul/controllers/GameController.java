@@ -1,4 +1,4 @@
-package app;
+package zuul.controllers;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -8,7 +8,11 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Duration;
-import app.model.*;
+import zuul.model.*;
+import zuul.model.FastFood;
+import zuul.model.Food;
+import zuul.model.Game;
+import zuul.model.Snake;
 import zuul.views.GameView;
 
 public class GameController {

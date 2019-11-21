@@ -21,10 +21,10 @@ public class MyGame extends Game {
     protected void createRooms() throws IOException {
         //Room outside, theatre, pub, lab, office;
         RoomCsvChecker check = new RoomCsvChecker();
-        if (!check.checkFile()) {
+        /*if (!check.checkFile()) {
             System.out.println(check.getErrorMessage());
             System.exit(0);
-        }
+        }*/
         allRooms = roomCsvUploader.createRoomsFromCsv(inputFile);
 
         RoomModifyier mod = new RoomModifyier();

@@ -12,7 +12,6 @@ import java.awt.Point;
 
 import zuul.model.Food;
 import zuul.model.Game;
-import zuul.model.HighScore;
 import zuul.model.Snake;
 
 public class GameView {
@@ -25,7 +24,6 @@ public class GameView {
     private boolean showGameOver = false;
 
     private Game game;
-    private HighScore highScore = new HighScore();
     private TextField userName;
 
     public GameView(Game game) {
@@ -105,7 +103,7 @@ public class GameView {
         userName.setVisible(true);
         userName.setOnAction(ev -> {
             userName.setVisible(false);
-            highScore.addScore(userName.getText(), "" + game.getScorePoints());
+//            highScore.addScore(userName.getText(), "" + game.getScorePoints());
         });
     }
 

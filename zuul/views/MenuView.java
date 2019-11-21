@@ -1,3 +1,18 @@
+/**
+ * Class Room - a room in an adventure game.
+ *
+ * This class is part of the "World of Zuul" application.
+ * "World of Zuul" is a very simple, text based adventure game.
+ *
+ * A "Room" represents one location in the scenery of the game.  It is
+ * connected to other rooms via exits.  The exits are labelled north,
+ * east, south, west.  For each direction, the room stores a reference
+ * to the neighboring room, or null if there is no exit in that direction.
+ *
+ * @author  Michael Kolling and David J. Barnes
+ * @version 2006.03.30
+ */
+
 package zuul.views;
 
 import java.util.ArrayList;
@@ -20,31 +35,30 @@ public class MenuView {
   private Button btnSetMap = new Button("Set Map");
   private Button btnExit = new Button("Exit");
 
-  private void setRootPane(Pane menuViewPane) {
-    menuViewPane.setPrefSize(600, 800);
-    menuViewPane.setPadding(new Insets(20));
-    BackgroundFill myBF = new BackgroundFill(Color.web("420d42"), CornerRadii.EMPTY, Insets.EMPTY);
-    menuViewPane.setBackground(new Background(myBF));
+  /**
+   * set root Pane size padding and bg
+   * @param rootPane Pane of the
+   */
+  private void setRootPane(Pane rootPane) {
+    rootPane.setPrefSize(800, 1000);
+    rootPane.setPadding(new Insets(20));
+    BackgroundFill myBF = ViewUtils.createBg();
+    rootPane.setBackground(new Background(myBF));
   }
 
-  private Text createTitles(String text, int size) {
-    Color color = Color.WHITE;
-    Font titleFont = Font.font("Verdana", size);
-    Text title = new Text();
-    title.setText(text);
-    title.setFont(titleFont);
-    title.setFill(color);
-    return title;
-  }
+  /**
+   * set root Pane size padding and bg
+   * @param rootPane root Pane
+   */
 
-  public MenuView(Pane menuViewPane) {
-    this.setRootPane(menuViewPane);
+  public MenuView(Pane rootPane) {
+    this.setRootPane(rootPane);
     VBox vbox = new VBox();
     vbox.setAlignment(Pos.CENTER);
 
-    Text title = createTitles("World of Zuul", 45);
-    Text subTitle = createTitles("Created with Java FX", 22);
-    Text authTitle = createTitles("Author: David GOERIG", 12);
+    Text title = ViewUtils.createTitles("World of Zuul", 45);
+    Text subTitle = ViewUtils.createTitles("Created with Java FX", 22);
+    Text authTitle = ViewUtils.createTitles("Author: David GOERIG", 12);
 
     VBox.setMargin(title, new Insets(0, 0, 50, 0));
     VBox.setMargin(subTitle, new Insets(0, 0, 30, 0));
@@ -64,14 +78,14 @@ public class MenuView {
     });
 
     vbox.getChildren().addAll(title, subTitle, buttons, authTitle);
-    menuViewPane.getChildren().addAll(vbox);
+    rootPane.getChildren().addAll(vbox);
   }
 
   public Button btnStart() {
     return btnStart;
   }
 
-  public Button btnScores() {
+  public Button getBtnSetMap() {
     return btnSetMap;
   }
 

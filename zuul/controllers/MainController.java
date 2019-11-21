@@ -20,18 +20,30 @@ import javafx.stage.Stage;
 import zuul.model.Food;
 import zuul.model.Game;
 import zuul.model.Snake;
+import zuul.mygame.MyGame;
 import zuul.views.MenuView;
 import zuul.views.GameView;
-import zuul.views.HighScoreView;
-import zuul.model.*;
+import zuul.views.SetMapView;
+
+import java.io.IOException;
 
 public class MainController {
+    // Primary stage / main scene
     public static Stage primaryStage = new Stage();
     public static Scene mainScene;
 
-    private Pane root = new StackPane();
+    /**
+     * rootPane
+     */
+    private Pane rootPane = new StackPane();
+    /** Setting Pane
+
+     */
     private Pane settingsRoot = new StackPane();
-    private Pane scoresRoot = new StackPane();
+    /**
+     *  Set map Pane
+     */
+    private Pane setMapPaneRoot= new StackPane();
     private ScrollPane scoresScrollPane = new ScrollPane();
 
     private static Stage gameStage;
@@ -50,26 +62,50 @@ public class MainController {
 
     private Button playButton;
 
-    public MainController() {
-        init();
+    private MyGame game = new zuul.mygame.MyGame("en", "en");
+
+    public MainController() throws IOException {
+        initGameController();
     }
 
-    public void init() {
-        MenuView menuView = new MenuView(root);
-        mainScene = new Scene(root);
+    private void initGameController() {
+        MenuView menuView = new MenuView(rootPane);
+        mainScene = new Scene(rootPane);
         primaryStage.setScene(mainScene);
-        primaryStage.setTitle("Snake");
+        primaryStage.setTitle("Word of Zuul - DJG");
         primaryStage.show();
 
-        menuView.btnStart().setOnAction(e -> primaryStage.setScene(initSettingsScene(settingsRoot)));
-        menuView.btnScores().setOnAction(e -> handleScore());
+        menuView.btnStart().setOnAction(e -> setSettingScene());
+        menuView.getBtnSetMap().setOnAction(e -> {
+            try {
+                setMapPanel();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
         menuView.btnExit().setOnAction(e -> System.exit(0));
     }
 
+    private void setSettingScene() {
+        primaryStage.setScene(initSettingsScene(settingsRoot));
+    }
+
     private Scene initSettingsScene(Pane root) {
+        /*
+         DANS LES SETTINGS NOM JOUER, MODIFIER LA CARTE, NBR DE JOUEUR (1, 2? 3)
+         MAP DE DEPART CHAMPION
+
+         POUR LANCER LE JEU (my game), passer tout ça en paramètre
+         */
+
+        // ici ajouter les boutons pour supprimer des cartes etc
+        // choisir ou commence le personnage
+
+        // ajouter aussi le nom du Personnage
         Scene scene = new Scene(root, mainScene.getWidth(), mainScene.getHeight());
         settingsLayout(root);
         playButton.setOnAction(e -> {
+            // ici lancer le jeu avec la carte choisie, avec les bon settings, et le jeu
             setDifficulty();
             setGridSize(inputGridSizeX.getText(), inputGridSizeY.getText());
             initGameStage();
@@ -81,14 +117,13 @@ public class MainController {
         return scene;
     }
 
-    public void handleScore() {
-        primaryStage.setScene(initScoreScene(scoresRoot));
+    private void setMapPanel() throws IOException {
+        primaryStage.setScene(initScoreScene(setMapPaneRoot));
     }
 
-    private Scene initScoreScene(Pane root) {
-        new HighScoreView(scoresScrollPane, root);
-        Scene scene = new Scene(root, mainScene.getWidth(), mainScene.getHeight());
-        return scene;
+    private Scene initScoreScene(Pane root) throws IOException {
+        new SetMapView(scoresScrollPane, root);
+        return new Scene(root, mainScene.getWidth(), mainScene.getHeight());
     }
 
     private void settingsLayout(Pane root) {
@@ -108,10 +143,12 @@ public class MainController {
         title.setText("Settings");
         title.setFont(Font.font("Comic Sans MS", 20));
 
+        // PEUT ETRE POUR CHOISIR LE SKIN?
         checkEasy = new CheckBox("Easy");
         checkMedium = new CheckBox("Normal");
         checkHard = new CheckBox("Hard");
 
+        // A LA PLACE DE CA METTRE LE NOMBRE DE JOUEURS
         inputGridSizeX = new TextField();
         inputGridSizeY = new TextField();
 
@@ -197,6 +234,7 @@ public class MainController {
     }
 
     private void setDifficulty() {
+        // changer le path du skin du player?
         if (checkEasy.isSelected()) {
             difficulty = 'E';
         } else if (checkMedium.isSelected()) {

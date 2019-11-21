@@ -98,13 +98,13 @@ public abstract class Game {
         if (allRooms == null || allRooms.size() < 1) {
             // en vrai juste reboucler sur le panel pour créer les rooms ou choisir celui de base hihi
             System.out.println("A problem occured. No rooms created.");
-            System.exit(0);
+            //System.exit(0);
         }
-        createPlayer("me"); // ADD INTERFACE FOR CREATING PLAYER
+        //createPlayer("me"); // ADD INTERFACE FOR CREATING PLAYER
         /*
             Gere GUY for create Char
          */
-        createCharacter();
+        //createCharacter();
     }
 
     /**

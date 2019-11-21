@@ -1,5 +1,6 @@
 package zuul.mygame;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -18,47 +19,16 @@ public class MyGame extends Game {
 	
     /** Create all the rooms and link their exits together.  */
     @Override
-    protected void createRooms() throws IOException {
-        //Room outside, theatre, pub, lab, office;
-        RoomCsvChecker check = new RoomCsvChecker();
-        /*if (!check.checkFile()) {
-            System.out.println(check.getErrorMessage());
-            System.exit(0);
-        }*/
-        allRooms = roomCsvUploader.createRoomsFromCsv(inputFile);
+    public void createRooms(File csvFile) throws IOException {
+        allRooms = roomCsvUploader.createRoomsFromCsv(csvFile);
 
+        // TODO FOUTRE CA SUR LES BOUTONS DU PANEL SETTINGS
         RoomModifyier mod = new RoomModifyier();
         allRooms = mod.newItemAllRoomWithoutExits(allRooms, "oui", 2);
         allRooms = mod.removeAllWithoutExits(allRooms);
         allRooms = mod.removeAllWithoutItems(allRooms);
 
         setAllRooms(allRooms);
-        /*
-        allRooms = new ArrayList<>();
-
-        // create the rooms
-        outside = new Room(messages.getString("outside")); // outside the main entrance of the university
-        allRooms.add(outside);
-        theatre = new Room(messages.getString("lecture")); // in a lecture theatre
-        allRooms.add(theatre);
-        pub = new Room(messages.getString("pub")); // in the campus pub
-        allRooms.add(pub);
-        lab = new Room(messages.getString("lab")); // in a computing lab
-        allRooms.add(lab);
-        office = new Room(messages.getString("admin")); // in the computing admin office
-        allRooms.add(office);
-       
-        // initialise room exits
-        outside.setExits(null, theatre, lab, pub);
-        outside.addItem(messages.getString("notebook"), 2);
-        theatre.setExits(null, null, null, outside);
-        pub.setExits(null, outside, null, null);
-        lab.setExits(outside, office, null, null);
-        office.setExits(null, null, null, lab);
-
-        setAllRooms(allRooms);
-
-         */
     }
 
     @Override

@@ -56,9 +56,12 @@ public abstract class Game {
     public static CommandWords commands;
     private final Parser parser;
 
-    protected File inputFile = new File("/zuul/res/config_file/game1.csv");
-
     private Player player;
+
+    public HashMap<String, Room> getAllRooms() {
+        return allRooms;
+    }
+
     protected HashMap<String, Room> allRooms;
 
     /**
@@ -90,21 +93,19 @@ public abstract class Game {
         }
         Sinon juste lancer avec le fichier de base:
          */
-        createRooms();
         //createRooms(inputFile); // ADD INTERFACE FOR CREATING ROOMS link, etc.
-        /*
+
+    }
+
+    public void createPlayerCharacter() {
+/*
             Here Guy For player creation
          */
-        if (allRooms == null || allRooms.size() < 1) {
-            // en vrai juste reboucler sur le panel pour créer les rooms ou choisir celui de base hihi
-            System.out.println("A problem occured. No rooms created.");
-            //System.exit(0);
-        }
-        //createPlayer("me"); // ADD INTERFACE FOR CREATING PLAYER
+        createPlayer("me"); // ADD INTERFACE FOR CREATING PLAYER
         /*
             Gere GUY for create Char
          */
-        //createCharacter();
+        createCharacter();
     }
 
     /**
@@ -170,16 +171,11 @@ public abstract class Game {
         allRooms = all;
     }
 
-
-    protected void setInputFile(File inputFile) {
-        this.inputFile = inputFile;
-    }
-
     /*------------------ Game specific stuff ----------------------------*/
     /**
      * Create all the rooms and link their exits together.
      */
-    protected abstract void createRooms() throws IOException;
+    protected abstract void createRooms(File file) throws IOException;
 
     /*
      * All the welcome messages

@@ -23,7 +23,6 @@ public class RoomCsvChecker {
     }
 
     public boolean checkFile(Path pathCsvFile) throws IOException {
-        pathCsvFile = Paths.get("zuul/res/config_file/game1.csv");
         Supplier<Stream<String>> supplierStreamCsv = loadCsvIntoStream(pathCsvFile);
         return isFileWellFormed(supplierStreamCsv);
     }

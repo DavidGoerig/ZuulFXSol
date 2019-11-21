@@ -62,7 +62,8 @@ public class MainController {
 
     private Button playButton;
 
-    private MyGame game = new zuul.mygame.MyGame("en", "en");
+    private MyGame game = new zuul.mygame.MyGame("en", "us");
+    private SetMapView setMapView;
 
     public MainController() throws IOException {
         initGameController();
@@ -75,7 +76,13 @@ public class MainController {
         primaryStage.setTitle("Word of Zuul - DJG");
         primaryStage.show();
 
-        menuView.btnStart().setOnAction(e -> setSettingScene());
+        menuView.btnStart().setOnAction(e -> {
+            try {
+                setSettingScene();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
         menuView.getBtnSetMap().setOnAction(e -> {
             try {
                 setMapPanel();
@@ -86,7 +93,14 @@ public class MainController {
         menuView.btnExit().setOnAction(e -> System.exit(0));
     }
 
-    private void setSettingScene() {
+    private void setSettingScene() throws IOException {
+        // Charges les cartes en fonctions du fichier select avant
+        game.createRooms(setMapView.getImportedFile());
+
+        if (game.getAllRooms() == null || game.getAllRooms().size() < 1) {
+            System.out.println("A problem occured. No rooms created.");
+            return ;
+        }
         primaryStage.setScene(initSettingsScene(settingsRoot));
     }
 
@@ -118,11 +132,11 @@ public class MainController {
     }
 
     private void setMapPanel() throws IOException {
-        primaryStage.setScene(initScoreScene(setMapPaneRoot));
+        primaryStage.setScene(initSetMapScene(setMapPaneRoot));
     }
 
-    private Scene initScoreScene(Pane root) throws IOException {
-        new SetMapView(scoresScrollPane, root);
+    private Scene initSetMapScene(Pane root) throws IOException {
+        setMapView = new SetMapView(scoresScrollPane, root);
         return new Scene(root, mainScene.getWidth(), mainScene.getHeight());
     }
 

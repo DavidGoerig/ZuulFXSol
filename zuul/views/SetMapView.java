@@ -34,12 +34,14 @@ public class SetMapView {
     File selectedFile = fileChooser.showOpenDialog(MainController.primaryStage);
     if (selectedFile != null) {
       if (check.checkFile(selectedFile.toPath())) {
-        System.out.println("TA GROSSE PUTE DE MERE");
         importedFile = selectedFile;
         fileExample.setText(fileToString(importedFile));
+
+        checkingPb.setFill(Color.GREEN);
         checkingPb.setText("File correctly imported!");
       }
       else {
+        checkingPb.setFill(Color.RED);
         checkingPb.setText(check.getErrorMessage());
       }
     }

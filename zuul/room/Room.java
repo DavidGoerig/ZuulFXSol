@@ -1,4 +1,9 @@
-package zuul;
+package zuul.room;
+
+import zuul.BadExitException;
+import zuul.Character;
+import zuul.Game;
+import zuul.Item;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -29,9 +34,9 @@ public class Room
     /** Exits from the room */
     final private Map<String, Room> exits;   
     /** Items in the room */
-    final private Map<String,Item> items;   
+    final private Map<String, Item> items;
     /** Characters in the room */
-    final private Map<String,Character> characters;
+    final private Map<String, Character> characters;
 
     /**
      * Create a room described "description". Initially, it has
@@ -83,6 +88,12 @@ public class Room
             throw new BadExitException(direction, room);
         exits.put(direction, room);
     }
+
+    public void removeExit(String dir) {
+        if (exits.containsKey(dir)) {
+            exits.remove(dir);
+        }
+    }
     
     /**
      * Get the room from an exit direction
@@ -129,8 +140,9 @@ public class Room
     public void addItem(String description, int weight) {
         addItem(description, new Item(description, weight));               
     }
+
     
-    void addItem(String desc, Item item) { items.put(desc, item); }
+    public void addItem(String desc, Item item) { items.put(desc, item); }
     
     /**
      * Does the room contain an item
@@ -138,7 +150,8 @@ public class Room
      * @return the item's weight or 0 if none
      */
     public boolean containsItem(String description) { return items.containsKey(description); }
-    
+
+    public boolean containsItem() { return (items.size() > 0);}
     /*
      * Get an item from the room if it is there
      */
@@ -154,7 +167,7 @@ public class Room
             return items.remove(description);
         }
         else {
-            Game.out.println(description + " " + Game.messages.getString("room")); // is not in the room
+            Game.out.println(description + " " + Game.messages.getString("zuul/room")); // is not in the room
             return null;
         }
     }

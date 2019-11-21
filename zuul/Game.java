@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import zuul.room.Room;
 import zuul.command.Command;
 import zuul.command.CommandWords;
 import zuul.command.Parser;
 import zuul.io.In;
 import zuul.io.Out;
-import zuul.roomcsv.RoomCsvChecker;
 import zuul.roomcsv.RoomCsvUploader;
 
 /**

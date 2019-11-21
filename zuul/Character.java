@@ -1,5 +1,7 @@
 package zuul;
 
+import zuul.room.Room;
+
 import java.util.Random;
 
 /**

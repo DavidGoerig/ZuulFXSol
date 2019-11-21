@@ -1,5 +1,7 @@
 package zuul;
 
+import zuul.room.Room;
+
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -75,7 +77,7 @@ public class Player {
     public void take(String desc) {
         if (!getCurrentRoom().containsItem(desc)) {
             // The item is not in the room
-            Game.out.println(desc + " " + Game.messages.getString("room")); // is not in the room"
+            Game.out.println(desc + " " + Game.messages.getString("zuul/room")); // is not in the room"
             return;
         }
         Item item = getCurrentRoom().getItem(desc);
@@ -112,11 +114,11 @@ public class Player {
     public void give(String desc, String whom) {
         if (!currentRoom.hasCharacter(whom)) {
             // cannot give it if the character is not here
-            Game.out.println(whom + " " + Game.messages.getString("room")); // is not in the room
+            Game.out.println(whom + " " + Game.messages.getString("zuul/room")); // is not in the room
             return;
         }
         if (!items.containsKey(desc)) {
-            Game.out.println(Game.messages.getString("room") + " " + desc); // You don't have the...
+            Game.out.println(Game.messages.getString("zuul/room") + " " + desc); // You don't have the...
             return;
         }
         Item item = items.remove(desc);

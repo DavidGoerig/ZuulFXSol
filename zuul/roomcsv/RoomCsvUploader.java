@@ -1,10 +1,9 @@
 package zuul.roomcsv;
 
 import javafx.util.Pair;
-import zuul.Room;
+import zuul.room.Room;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -63,7 +62,7 @@ public class RoomCsvUploader {
         });
     }
 
-    private void initialiseExits(Supplier<Stream<String>> supplier, HashMap<String, Room> allRooms) {
+    void initialiseExits(Supplier<Stream<String>> supplier, HashMap<String, Room> allRooms) {
         List<String[]> list = supplier.get().map(line -> {
             String[] str = line.split(",");
             return new String[]{str[0], str[2], str[3], str[4], str[5]};

@@ -3,10 +3,11 @@ package zuul.mygame;
 import java.io.IOException;
 import java.util.*;
 
-import zuul.Character;
 import zuul.Game;
+import zuul.Item;
 import zuul.Player;
-import zuul.Room;
+import zuul.room.Room;
+import zuul.room.RoomModifyier;
 import zuul.roomcsv.RoomCsvChecker;
 
 public class MyGame extends Game {
@@ -25,6 +26,12 @@ public class MyGame extends Game {
             System.exit(0);
         }
         allRooms = roomCsvUploader.createRoomsFromCsv(inputFile);
+
+        RoomModifyier mod = new RoomModifyier();
+        allRooms = mod.newItemAllRoomWithoutExits(allRooms, "oui", 2);
+        allRooms = mod.removeAllWithoutExits(allRooms);
+        allRooms = mod.removeAllWithoutItems(allRooms);
+
         setAllRooms(allRooms);
         /*
         allRooms = new ArrayList<>();

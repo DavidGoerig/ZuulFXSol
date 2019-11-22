@@ -62,20 +62,26 @@ public class MainController {
 
     private Button playButton;
 
+    // Jé fé ça
     private MyGame game = new zuul.mygame.MyGame("en", "us");
-    private SetMapView setMapView;
+    private SetMapView setMapView = null;
+    private Scene sceneSetMapView;
+    private Scene settingScene;
+    private MenuView menuView;
 
     public MainController() throws IOException {
         initGameController();
     }
 
-    private void initGameController() {
-        MenuView menuView = new MenuView(rootPane);
+    private void initGameController() throws IOException {
+        menuView = new MenuView(rootPane);
         mainScene = new Scene(rootPane);
         primaryStage.setScene(mainScene);
         primaryStage.setTitle("Word of Zuul - DJG");
         primaryStage.show();
+        initSettingsScene();
 
+        initSetMapScene();
         menuView.btnStart().setOnAction(e -> {
             try {
                 setSettingScene();
@@ -90,7 +96,20 @@ public class MainController {
                 ex.printStackTrace();
             }
         });
+        menuView.getBtnFr().setOnAction(e -> {
+            game.setBundle("fr", "fr");
+            updateButtonDisplay();
+
+        });
+        menuView.getBtnEn().setOnAction(e -> {
+            game.setBundle("en", "us");
+            updateButtonDisplay();
+        });
         menuView.btnExit().setOnAction(e -> System.exit(0));
+    }
+
+    private void updateButtonDisplay() {
+
     }
 
     private void setSettingScene() throws IOException {
@@ -101,10 +120,10 @@ public class MainController {
             System.out.println("A problem occured. No rooms created.");
             return ;
         }
-        primaryStage.setScene(initSettingsScene(settingsRoot));
+        primaryStage.setScene(settingScene);
     }
 
-    private Scene initSettingsScene(Pane root) {
+    private void initSettingsScene() {
         /*
          DANS LES SETTINGS NOM JOUER, MODIFIER LA CARTE, NBR DE JOUEUR (1, 2? 3)
          MAP DE DEPART CHAMPION
@@ -116,8 +135,8 @@ public class MainController {
         // choisir ou commence le personnage
 
         // ajouter aussi le nom du Personnage
-        Scene scene = new Scene(root, mainScene.getWidth(), mainScene.getHeight());
-        settingsLayout(root);
+        settingScene = new Scene(settingsRoot, mainScene.getWidth(), mainScene.getHeight());
+        settingsLayout(settingsRoot);
         playButton.setOnAction(e -> {
             // ici lancer le jeu avec la carte choisie, avec les bon settings, et le jeu
             setDifficulty();
@@ -128,19 +147,22 @@ public class MainController {
             primaryStage.close();
             gameStage.show();
         });
-        return scene;
     }
 
     private void setMapPanel() throws IOException {
-        primaryStage.setScene(initSetMapScene(setMapPaneRoot));
+        primaryStage.setScene(sceneSetMapView);
     }
 
-    private Scene initSetMapScene(Pane root) throws IOException {
-        setMapView = new SetMapView(scoresScrollPane, root);
-        return new Scene(root, mainScene.getWidth(), mainScene.getHeight());
+    private void initSetMapScene() throws IOException {
+        setMapView = new SetMapView(scoresScrollPane, setMapPaneRoot);
+        sceneSetMapView = new Scene(setMapPaneRoot, mainScene.getWidth(), mainScene.getHeight());
     }
 
     private void settingsLayout(Pane root) {
+        // ICI AJOUTER NOM, SALLE DE DEPART, ET LES 3 BOUTTONS POUR CHANGER LES ROOMS QUI SONT DANS GAME LA
+
+        Button backBtn = new Button("<- Back");
+        backBtn.setOnAction(ev -> primaryStage.setScene(mainScene));
         VBox container = new VBox();
         HBox checkboxesContainer = new HBox();
         HBox inputsContainer = new HBox();
@@ -177,7 +199,7 @@ public class MainController {
 
         checkboxesContainer.getChildren().addAll(checkEasy, checkMedium, checkHard);
         inputsContainer.getChildren().addAll(inputGridSizeX, inputGridSizeY);
-        container.getChildren().addAll(title, checkboxesContainer, inputsContainer, playButton);
+        container.getChildren().addAll(title, backBtn, checkboxesContainer, inputsContainer, playButton);
         root.getChildren().add(container);
     }
 

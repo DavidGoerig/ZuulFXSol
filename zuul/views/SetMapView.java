@@ -31,6 +31,7 @@ public class SetMapView {
   private void fileHandler() throws IOException {
     RoomCsvChecker check = new RoomCsvChecker();
     FileChooser fileChooser = new FileChooser();
+    fileChooser.getExtensionFilters ().add(new FileChooser.ExtensionFilter("Csv Files", "*.csv"));
     File selectedFile = fileChooser.showOpenDialog(MainController.primaryStage);
     if (selectedFile != null) {
       if (check.checkFile(selectedFile.toPath())) {

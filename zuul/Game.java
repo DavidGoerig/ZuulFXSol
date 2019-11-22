@@ -74,29 +74,17 @@ public abstract class Game {
      */
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public Game(String language, String country, CommandWords commands) throws IOException {
-        // internationalise
         Locale currentLocale = new Locale(language, country);
         messages = ResourceBundle.getBundle("zuul.mygame.MessagesBundle", currentLocale);
         Game.commands = commands;
         parser = new Parser("zuul.mygame");
-        /*
-            Here Gui for Room creation -> in the Gui first compute the checker.
-         */
-        /*
-        Si file importé (bouton pressé):
-        if (!(roomCsvChecker.checkFile(givenFileFromGui)) {
-            Afficher le message d'erreure du fichier et ne pas changer de scene
-        }
-        else {
-            createRooms();
-            changer de scène vers Room modifier
-        }
-        Sinon juste lancer avec le fichier de base:
-         */
-        //createRooms(inputFile); // ADD INTERFACE FOR CREATING ROOMS link, etc.
-
     }
 
+    public void setBundle(String language, String country) {
+        Locale currentLocale = new Locale(language, country);
+        messages = ResourceBundle.getBundle("zuul.mygame.MessagesBundle", currentLocale);
+
+    }
     public void createPlayerCharacter() {
 /*
             Here Guy For player creation

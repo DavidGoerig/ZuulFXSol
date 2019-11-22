@@ -34,6 +34,8 @@ public class MenuView {
   private Button btnStart = new Button("New Game");
   private Button btnSetMap = new Button("Set Map");
   private Button btnExit = new Button("Exit");
+  private Button btnFr = new Button("Game in fr");
+  private Button btnEn = new Button("Game in en");
 
   /**
    * set root Pane size padding and bg
@@ -69,7 +71,7 @@ public class MenuView {
     buttons.setAlignment(Pos.CENTER);
 
     ArrayList<Button> btns = new ArrayList<>();
-    btns.addAll(Arrays.asList(btnStart, btnSetMap, btnExit));
+    btns.addAll(Arrays.asList(btnStart, btnSetMap, btnExit, btnEn, btnFr));
 
     btns.forEach(el -> {
       el.setPrefWidth(200.0);
@@ -91,5 +93,13 @@ public class MenuView {
 
   public Button btnExit() {
     return btnExit;
+  }
+
+  public Button getBtnFr() {
+    return btnFr;
+  }
+
+  public Button getBtnEn() {
+    return btnEn;
   }
 }

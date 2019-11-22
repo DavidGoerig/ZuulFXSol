@@ -98,17 +98,19 @@ public class MainController {
         });
         menuView.getBtnFr().setOnAction(e -> {
             game.setBundle("fr", "fr");
-            updateButtonDisplay();
+            updateButtonTextDisplay();
 
         });
         menuView.getBtnEn().setOnAction(e -> {
             game.setBundle("en", "us");
-            updateButtonDisplay();
+            updateButtonTextDisplay();
         });
         menuView.btnExit().setOnAction(e -> System.exit(0));
     }
 
-    private void updateButtonDisplay() {
+    private void updateButtonTextDisplay() {
+        menuView.updateButtonTextDisplay();
+        setMapView.updateButtonTextDisplay();
 
     }
 

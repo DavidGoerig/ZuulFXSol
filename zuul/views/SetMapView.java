@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import zuul.Game;
 import zuul.controllers.MainController;
 import zuul.roomcsv.RoomCsvChecker;
 import zuul.roomcsv.*;
@@ -28,6 +29,11 @@ public class SetMapView {
   private Text fileExample;
   private Text checkingPb;
 
+  private Text title;
+  private Text rule;
+  private Button buttonChooseMap;
+  private Button backBtn;
+
   private void fileHandler() throws IOException {
     RoomCsvChecker check = new RoomCsvChecker();
     FileChooser fileChooser = new FileChooser();
@@ -39,7 +45,7 @@ public class SetMapView {
         fileExample.setText(fileToString(importedFile));
 
         checkingPb.setFill(Color.GREEN);
-        checkingPb.setText("File correctly imported!");
+        checkingPb.setText(Game.messages.getString("correctImport"));
       }
       else {
         checkingPb.setFill(Color.RED);
@@ -81,7 +87,7 @@ public class SetMapView {
 
   public SetMapView(ScrollPane sp, Pane root) throws IOException {
     /** Filechooser */
-    Button buttonChooseMap = new Button("Select File");
+    buttonChooseMap = new Button(Game.messages.getString("buttonChooseMap"));
     buttonChooseMap.setOnAction(e -> {
       try {
         fileHandler();
@@ -98,14 +104,14 @@ public class SetMapView {
     /**
      * Back to menu
      */
-    Button backBtn = new Button("<- Back");
+    backBtn = new Button(Game.messages.getString("backButton"));
     backBtn.setOnAction(ev -> MainController.primaryStage.setScene(MainController.mainScene));
 
     /**
       Adapt to panel
      */
-    Text title = ViewUtils.createTitles("Import your own game setup:", 28);
-    Text rule = ViewUtils.createTitles("If you don't change it the default file will be used.\nEach line of these files is a comma-separated list of strings of the form (.csv):\n<room-id>, <room-descr>, <north>, <east>, <south>, <west>, [<item>,<weight>]*", 14);
+    title = ViewUtils.createTitles(Game.messages.getString("titleMapView"), 28);
+    rule = ViewUtils.createTitles(Game.messages.getString("rule"), 14);
 
     /**
      * ScoresRoot
@@ -139,5 +145,12 @@ public class SetMapView {
 
   public void setImportedFile(File importedFile) {
     this.importedFile = importedFile;
+  }
+
+  public void updateButtonTextDisplay() {
+    title.setText(Game.messages.getString("titleMapView"));
+    rule.setText(Game.messages.getString("rule"));
+    buttonChooseMap.setText(Game.messages.getString("buttonChooseMap"));
+    backBtn.setText(Game.messages.getString("backButton"));
   }
 }

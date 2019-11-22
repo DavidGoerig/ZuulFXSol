@@ -65,10 +65,10 @@ public class Room
     public void setExits(Room north, Room east, Room south, Room west) 
     {
         try {
-	    setExit(Game.messages.getString("north"), north);
-	    setExit(Game.messages.getString("east"), east);
-	    setExit(Game.messages.getString("south"), south);
-	    setExit(Game.messages.getString("west"), west);
+	    setExit("north", north);
+	    setExit("east", east);
+	    setExit("south", south);
+	    setExit("west", west);
 	} catch (BadExitException e) {
 	    e.printStackTrace();
 	    System.exit(1);

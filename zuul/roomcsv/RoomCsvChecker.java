@@ -68,7 +68,7 @@ public class RoomCsvChecker {
                 .filter(line -> !isPositiveInt(line.getValue().toString()))
                 .collect(Collectors.toList());
         if (list.size() > 0) {
-            setErrorMessage("One of weight is not a positive integer:" + list);
+            setErrorMessage(Game.messages.getString("posint") + list);
             return false;
         }
         return true;
@@ -105,7 +105,7 @@ public class RoomCsvChecker {
                 .filter(l -> Collections.frequency(allItemName, l) != 1)
                 .collect(Collectors.toList());
         if (dupplication.size() > 0) {
-            setErrorMessage("ERROR: this item are duplicated:" + dupplication);
+            setErrorMessage(Game.messages.getString("duplicated") + dupplication);
             return false;
         }
         return true;
@@ -119,7 +119,7 @@ public class RoomCsvChecker {
                 .filter(line -> !allRoomName.contains(line))
                 .collect(Collectors.toList());
         if (list.size() > 0) {
-            setErrorMessage("One of the exit is not an existing room.:" + list);
+            setErrorMessage(Game.messages.getString("exitdontexist") + list);
             return false;
         }
         return true;
@@ -152,7 +152,7 @@ public class RoomCsvChecker {
                 .filter(line->line.split(",").length % 2 != 0)
                 .collect(Collectors.toList());
         if (list.size() > 0) {
-            setErrorMessage("Objects need to be in this format: name weight:" + list);
+            setErrorMessage(Game.messages.getString("objformat") + list);
             return false;
         }
         return true;
@@ -164,7 +164,7 @@ public class RoomCsvChecker {
                 .filter(line->line.split(",").length < 6)
                 .collect(Collectors.toList());
         if (list.size() > 0) {
-            setErrorMessage("Error, not all information for every rooms.:" + list);
+            setErrorMessage(Game.messages.getString("info") + list);
             return false;
         }
         return true;
@@ -186,9 +186,9 @@ public class RoomCsvChecker {
             Map.Entry entry = stringRoomEntry;
             for (String dir: directions) {
                 Room room = (Room) entry.getValue();
-                Room exitRoom = room.getExit(Game.messages.getString(dir));
+                Room exitRoom = room.getExit(dir);
                 if (exitRoom != null && exitRoom.getExit(this.findOppositeDir(dir)) != room) {
-                    setErrorMessage("ERROR: these rooms exits are not pair wised: " + room.getName() + "->" + dir + " / " + exitRoom.getName() + "->" + this.findOppositeDir(dir));
+                    setErrorMessage(Game.messages.getString("pair") + room.getName() + "->" + dir + " / " + exitRoom.getName() + "->" + this.findOppositeDir(dir));
                     return false;
                 }
             }

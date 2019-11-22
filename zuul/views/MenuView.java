@@ -21,6 +21,8 @@ import java.util.Arrays;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -29,13 +31,17 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import zuul.Game;
 
 public class MenuView {
-  private Button btnStart = new Button("New Game");
-  private Button btnSetMap = new Button("Set Map");
-  private Button btnExit = new Button("Exit");
-  private Button btnFr = new Button("Game in fr");
-  private Button btnEn = new Button("Game in en");
+  private Button btnStart = new Button(Game.messages.getString("btnStart"));
+  private Button btnSetMap = new Button(Game.messages.getString("btnSetMap"));
+  private Button btnExit = new Button(Game.messages.getString("btnExit"));
+  private Button btnFr = new Button(Game.messages.getString("btnFr"));
+  private Button btnEn = new Button(Game.messages.getString("btnEn"));
+  private Text title;
+  private Text subTitle;
+  private Text authTitle;
 
   /**
    * set root Pane size padding and bg
@@ -57,10 +63,15 @@ public class MenuView {
     this.setRootPane(rootPane);
     VBox vbox = new VBox();
     vbox.setAlignment(Pos.CENTER);
+    Image enImg = new Image("zuul/views/res/en.png");
+    btnEn.setGraphic(new ImageView(enImg));
 
-    Text title = ViewUtils.createTitles("World of Zuul", 45);
-    Text subTitle = ViewUtils.createTitles("Created with Java FX", 22);
-    Text authTitle = ViewUtils.createTitles("Author: David GOERIG", 12);
+    Image frImg = new Image("zuul/views/res/fr.png");
+    btnFr.setGraphic(new ImageView(frImg));
+
+    title = ViewUtils.createTitles(Game.messages.getString("title"), 45);
+    subTitle = ViewUtils.createTitles(Game.messages.getString("subTitle"), 22);
+     authTitle = ViewUtils.createTitles(Game.messages.getString("authTitle"), 12);
 
     VBox.setMargin(title, new Insets(0, 0, 50, 0));
     VBox.setMargin(subTitle, new Insets(0, 0, 30, 0));
@@ -101,5 +112,17 @@ public class MenuView {
 
   public Button getBtnEn() {
     return btnEn;
+  }
+
+  public void updateButtonTextDisplay() {
+    btnStart.setText(Game.messages.getString("btnStart"));
+    btnSetMap.setText(Game.messages.getString("btnSetMap"));
+    btnExit.setText(Game.messages.getString("btnExit"));
+    btnFr.setText(Game.messages.getString("btnFr"));
+    btnEn.setText(Game.messages.getString("btnEn"));
+    title.setText(Game.messages.getString("title"));
+    subTitle.setText(Game.messages.getString("subTitle"));
+    authTitle.setText(Game.messages.getString("authTitle"));
+
   }
 }

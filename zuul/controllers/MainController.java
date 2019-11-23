@@ -111,6 +111,7 @@ public class MainController {
     private void updateButtonTextDisplay() {
         menuView.updateButtonTextDisplay();
         setMapView.updateButtonTextDisplay();
+        settingView.updateText();
 
     }
 

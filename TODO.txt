@@ -1,37 +1,13 @@
-1. First create a first page "select language"
+1. ajouter les rooms (nom, desc, connexion) + 1 bouton pour delete la room + add obj
 
-2. Après aller au menu principale (ou on peux lancer le jeu, et mettre un fichier de jeu)
+2. ajouter les character (bouton + input) pour add + liste des character
 
-Pour le parsing:
-- bien check que une sortie qui est au sud pour une room est au nord pour l'autre etc.
-- toutes  les sorties parle bien d'une room du fichier
-- tous les items ont un nom différents
-- tous les poids sont des int positifs
+3. faire de settingview un moins gros bordel
 
-Faire que si un des trucs du parsing fail à l'import du fichier, un message apparait.
-(Faire que avant de passer le panel, quand le fichier est importé, on passe d'abord un "checker" pour ça (classe checker)
+4. implémenter le jeu
 
-3. Une fois que on a choisi "fichier de base" ou "choisi ton fichier" (si nbr of room < 1 prend le fichier de base!)
--> faire un panel pour modifier les rooms.
-Faire un menu pour changer la map si on a passé le checker
-- permettre d'ajouter un objet dans une room
-- permettre d'ajouter un objet dans ttes les rooms sans sorties
-- permettre de supprimer toutes les pièces sans items
+5. Javadoc
 
+6. vidéo
 
-4. Après un menu pour créer son caractère (en choisissant le nom) + une liste pour choisir une room de départ
-
-5. Et ajouter des autres caractères (nom + une liste pour choisir la room de départ)
-
-6. lancer le jeu nouvelle scène
-Panel de gauche:
-NOM de la room
-Objets présent + prendre objet
-Player présent + liste pour donner obket
-
-Panel du milieu
-image de la room + un truc pour bouger un personnage au moins lol
-
-Panel de droite:
-Nom du joueur
-Objet que j'ai + drop l'objet
+7. report

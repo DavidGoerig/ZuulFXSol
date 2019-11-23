@@ -10,6 +10,7 @@ import zuul.Player;
 import zuul.room.Room;
 import zuul.room.RoomModifyier;
 import zuul.roomcsv.RoomCsvChecker;
+import zuul.Character;
 
 public class MyGame extends Game {
 
@@ -43,17 +44,27 @@ public class MyGame extends Game {
     }
 
     @Override
-    protected void createCharacter() {
+    public void createCharacter(String name, Room r) {
         // add a character
         // here I create a new anonymous class that is a subclass of Character with a
         // different execute method
-        /*lab.addCharacter(new Character(messages.getString("Cecilia"), lab) {
+        r.addCharacter(new Character(name, r) {
             @Override
             public void execute() {
                 randomMove();
             }
         });
-
-         */
     }
+
+    @Override
+    public void deleteRoom(Room r) {
+        Iterator iterator = allRooms.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            if (r.equals(entry.getValue())) {
+                iterator.remove();
+            }
+        }
+    };
 }

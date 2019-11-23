@@ -131,6 +131,22 @@ public class Room
         
         return rv;
     }
+
+    public String getTtemDetails() {
+        String tmp = "";
+        tmp = items.keySet().stream()
+                .map((desc) -> desc + '(' + items.get(desc).getWeight() + ')')
+                .reduce(tmp, String::concat);
+        return tmp;
+    }
+
+    public String getCharacterDetails() {
+        String tmp = "";
+        tmp = characters.keySet().stream()
+                .map((desc) -> desc + ' ')
+                .reduce(tmp, String::concat);
+        return tmp;
+    }
     
     /**
      * Add an item to the Room

@@ -85,16 +85,6 @@ public abstract class Game {
         messages = ResourceBundle.getBundle("zuul.mygame.MessagesBundle", currentLocale);
 
     }
-    public void createPlayerCharacter() {
-/*
-            Here Guy For player creation
-         */
-        createPlayer("me"); // ADD INTERFACE FOR CREATING PLAYER
-        /*
-            Gere GUY for create Char
-         */
-        createCharacter();
-    }
 
     /**
      * Main play routine. Loops until end of play.
@@ -172,6 +162,7 @@ public abstract class Game {
 
     public abstract void createPlayer(String playerName);
 
-    protected abstract void createCharacter();
+    public abstract void createCharacter(String name, Room r);
 
+    public abstract void deleteRoom(Room r);
 }

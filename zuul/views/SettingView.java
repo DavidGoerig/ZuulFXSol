@@ -1,16 +1,21 @@
 package zuul.views;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import zuul.Game;
 import zuul.room.Room;
 import zuul.room.RoomModifyier;
@@ -24,6 +29,8 @@ public class SettingView {
     private Game game;
     private TextField inputGridSizeX = new TextField();
     private TextField inputGridSizeY = new TextField();
+    private TextField inputObjName = new TextField();
+    private TextField inputObjWeight = new TextField();
 
     private TextField inputCharacterName = new TextField();
 
@@ -32,6 +39,9 @@ public class SettingView {
 
     private HBox inputsContainer = new HBox();
     private HBox checkboxesContainer = new HBox();
+
+    private TableView<Room> table = new TableView<Room>();
+    private final ObservableList<Room> data = FXCollections.observableArrayList();
 
 
     public static boolean isNumeric(String str) {
@@ -58,19 +68,19 @@ public class SettingView {
             }
             HashMap<String, Room> allRooms = mod.newItemAllRoomWithoutExits(game.getAllRooms(), inputGridSizeX.getText(), weight);
             game.setAllRooms(allRooms);
-
+            updatePanel();
         });
         Button removeNoExitBtn = new Button("Remove all room without exit.");
         removeNoExitBtn.setOnAction(ev -> {
             HashMap<String, Room> allRooms = mod.removeAllWithoutExits(game.getAllRooms());
             game.setAllRooms(allRooms);
-            updateToggleCheckboxes();
+            updatePanel();
         });
         Button removeAllRoomNoItemBtn = new Button("Remove all room without item.");
         removeAllRoomNoItemBtn.setOnAction(ev -> {
             HashMap<String, Room> allRooms = mod.removeAllWithoutItems(game.getAllRooms());
             game.setAllRooms(allRooms);
-            updateToggleCheckboxes();
+            updatePanel();
         });
 
 
@@ -114,15 +124,162 @@ public class SettingView {
         titleSetCharacter.setText("Add some characters:");
         titleSetCharacter.setFont(Font.font("Verdana", 20));
 
-        // PEUT ETRE POUR CHOISIR LE SKIN?
         updateToggleCheckboxes();
 
         // A LA PLACE DE CA METTRE LE NOMBRE DE JOUEURS
+
         inputGridSizeX.setPromptText("Object name (default: obj)");
         inputGridSizeY.setPromptText("Object weight (default: 1)");
         inputCharacterName.setPromptText(game.getPlayer().getName());
         inputGridSizeX.setPrefWidth(200);
         inputGridSizeY.setPrefWidth(200);
+
+        // ICI C'EST POUR ADD UN ITEM
+        final HBox hboxAddItem = new HBox();
+        hboxAddItem.setSpacing(5);
+        hboxAddItem.setAlignment(Pos.CENTER);
+        inputObjName.setPromptText("Object name (default: obj)");
+        inputObjWeight.setPromptText("Object weight (default: 1)");
+        inputObjName.setPrefWidth(200);
+        inputObjWeight.setPrefWidth(200);
+        Button addItemToRoomBtn = new Button("Add an item in selected room:");
+        addItemToRoomBtn.setOnAction(ev -> {
+            int weight = 1;
+            if (isNumeric(inputObjWeight.getText())) {
+                weight = Integer.parseInt(inputObjWeight.getText());
+            }
+            Room r = table.getSelectionModel().getSelectedItem();
+            if (r == null)
+                return;
+            game.getAllRooms().get(r.getName()).addItem(inputObjName.getText(), weight);
+            updatePanel();
+        });
+        hboxAddItem.getChildren().addAll(addItemToRoomBtn, inputObjName, inputObjWeight);
+
+        // ICI C LE TABLO
+        data.clear();
+        HashMap<String, Room> allroom = this.game.getAllRooms();
+        Iterator iterator = allroom.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry me2 = (Map.Entry) iterator.next();
+            Room temp = (Room) me2.getValue();
+            data.add(temp);
+        }
+        table.setEditable(true);
+
+        TableColumn nameCol = new TableColumn("Name");
+        nameCol.setMinWidth(100);
+        nameCol.setCellValueFactory(
+                new PropertyValueFactory<Room, String>("name"));
+
+        TableColumn descCol = new TableColumn("Description");
+        descCol.setMinWidth(200);
+        descCol.setCellValueFactory(
+                new PropertyValueFactory<Room, String>("description"));
+
+        TableColumn<Room, String> exitNorthCol = new TableColumn<Room, String>("Exits north");
+        exitNorthCol.setMinWidth(100);
+        exitNorthCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Room, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Room, String> p) {
+                // p.getValue() returns the Person instance for a particular TableView row
+                Room tmp = p.getValue();
+                if (tmp.getExit("north") == null)
+                    return new SimpleStringProperty("null");
+                return new SimpleStringProperty(tmp.getExit("north").getName());
+            }
+        });
+        TableColumn<Room, String> exitSoutCol = new TableColumn<Room, String>("Exits south");
+        exitSoutCol.setMinWidth(100);
+        exitSoutCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Room, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Room, String> p) {
+                // p.getValue() returns the Person instance for a particular TableView row
+                Room tmp = p.getValue();
+                if (tmp.getExit("south") == null)
+                    return new SimpleStringProperty("null");
+                return new SimpleStringProperty(tmp.getExit("south").getName());
+            }
+        });
+        TableColumn<Room, String> exitEastCol = new TableColumn<Room, String>("Exits east");
+        exitEastCol.setMinWidth(100);
+        exitEastCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Room, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Room, String> p) {
+                // p.getValue() returns the Person instance for a particular TableView row
+                Room tmp = p.getValue();
+                if (tmp.getExit("east") == null)
+                    return new SimpleStringProperty("null");
+                return new SimpleStringProperty(tmp.getExit("east").getName());
+            }
+        });
+        TableColumn<Room, String> exitWestCol = new TableColumn<Room, String>("Exits west");
+        exitWestCol.setMinWidth(100);
+        exitWestCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Room, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Room, String> p) {
+                // p.getValue() returns the Person instance for a particular TableView row
+                Room tmp = p.getValue();
+                if (tmp.getExit("west") == null)
+                    return new SimpleStringProperty("null");
+                return new SimpleStringProperty(tmp.getExit("west").getName());
+            }
+        });
+        TableColumn<Room, String> itemCol = new TableColumn<Room, String>("Items");
+        itemCol.setMinWidth(200);
+        itemCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Room, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Room, String> p) {
+                // p.getValue() returns the Person instance for a particular TableView row
+                Room tmp = p.getValue();
+                return new SimpleStringProperty(tmp.getTtemDetails());
+            }
+        });
+        TableColumn<Room, String> characterCol = new TableColumn<Room, String>("Characters");
+        characterCol.setMinWidth(200);
+        characterCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Room, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Room, String> p) {
+                // p.getValue() returns the Person instance for a particular TableView row
+                Room tmp = p.getValue();
+                return new SimpleStringProperty(tmp.getCharacterDetails());
+            }
+        });
+        // FIN DU TABLEAU
+        Button removeRoomBtn = new Button("Remove selected room.");
+        removeRoomBtn.setOnAction(ev -> {
+            Room r = table.getSelectionModel().getSelectedItem();
+            game.deleteRoom(r);
+            updatePanel();
+        });
+
+        //ICI C LES CHARACTERS
+
+        TextField setCharacterName = new TextField();
+        setCharacterName.setPrefWidth(200);
+        setCharacterName.setPromptText("Cecilia");
+        HBox vboxAddChar = new HBox();
+        vboxAddChar.setAlignment(Pos.CENTER);
+        Button addCharacterBtn = new Button("Add character to selected room.");
+        addCharacterBtn.setOnAction(ev -> {
+            Room r = table.getSelectionModel().getSelectedItem();
+            if (r == null)
+                return;
+            String name = "Cecilia";
+            if (setCharacterName.getText() != "")
+                name = setCharacterName.getText();
+            game.createCharacter(name, r);
+
+
+            updatePanel();
+        });
+        vboxAddChar.getChildren().addAll(addCharacterBtn, setCharacterName);
+
+
+
+
+        table.setItems(data);
+        table.getColumns().addAll(nameCol, descCol, exitNorthCol, exitEastCol, exitSoutCol, exitWestCol, itemCol, characterCol);
+
+        final VBox vbox = new VBox();
+        vbox.setSpacing(5);
+        vbox.setPadding(new Insets(10, 0, 0, 10));
+        vbox.getChildren().addAll(table);
+        //FIN TABLO
 
         playButton = new Button("Play");
 
@@ -130,11 +287,14 @@ public class SettingView {
         roomChangerContainer.getChildren().addAll(addItemBtn, inputsContainer);
         deleteRoomContainer.getChildren().addAll(removeAllRoomNoItemBtn, removeNoExitBtn);
         inputsContainer.getChildren().addAll(inputGridSizeX, inputGridSizeY);
-        container.getChildren().addAll(title, titleMapPart, roomChangerContainer, deleteRoomContainer, titleSetPlayer, setPlayerNameContainer, checkboxesContainer, titleSetCharacter, playButton, backBtn);
+        container.getChildren().addAll(title, titleMapPart, vbox, removeRoomBtn, hboxAddItem, roomChangerContainer, deleteRoomContainer, titleSetPlayer, setPlayerNameContainer, checkboxesContainer, titleSetCharacter, vboxAddChar, playButton, backBtn);
         root.getChildren().add(container);
     }
 
     private void updateToggleCheckboxes() {
+        if (game.getAllRooms().size() == 0) {
+            return;
+        }
         // put the player in the first room
         Map.Entry<String, Room> entry = game.getAllRooms().entrySet().iterator().next();
         Room randomRoom = entry.getValue();
@@ -145,7 +305,6 @@ public class SettingView {
         Iterator iterator = allroom.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry me2 = (Map.Entry) iterator.next();
-            System.out.println("Key: "+me2.getKey() + " & Value: " + me2.getValue());
             Room room = (Room) me2.getValue();
             CheckBox checkBox = new CheckBox(room.getName());
             checkBox.setSelected(false);
@@ -161,10 +320,8 @@ public class SettingView {
             Map.Entry me2 = (Map.Entry) it.next();
             CheckBox temp = (CheckBox) me2.getValue();
             temp.setOnAction(e -> {
-                System.out.println("OUI TA MER");
                 if (!temp.isSelected()) {
                     temp.setSelected(true);
-                    System.out.println("OUI");
                 }
                 else {
                     Iterator i = toggleCheckBoxList.entrySet().iterator();
@@ -184,9 +341,17 @@ public class SettingView {
     public void updatePanel() {
         // bien mettre la room de départ choisie
         updateToggleCheckboxes();
+        // tab room update
+        data.clear();
+        HashMap<String, Room> allroom = this.game.getAllRooms();
+        Iterator iterator = allroom.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry me2 = (Map.Entry) iterator.next();
+            Room temp = (Room) me2.getValue();
+            data.add(temp);
+        }
 
         inputCharacterName.setPromptText(game.getPlayer().getName());
-        System.out.println(game.getAllRooms());
     }
 
     public Button getPlayButton() {

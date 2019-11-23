@@ -13,7 +13,7 @@ import java.util.HashMap;
  * @author rej
  */
 public class Player {
-    private final String name;
+    private String name;
     private Room currentRoom;
     
     /** A map of items the player has */
@@ -40,6 +40,7 @@ public class Player {
 
     /** @return the name */
     public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
     /** @return the currentRoom */
     public Room getCurrentRoom() { return currentRoom; }

@@ -42,6 +42,7 @@ public class SetMapView {
     if (selectedFile != null) {
       if (check.checkFile(selectedFile.toPath())) {
         importedFile = selectedFile;
+        System.out.println(importedFile);
         fileExample.setText(fileToString(importedFile));
 
         checkingPb.setFill(Color.GREEN);

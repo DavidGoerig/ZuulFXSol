@@ -33,9 +33,8 @@ public class RoomCsvUploader {
     }
 
     public HashMap<String, Room> createRoomsFromCsv(File csvFile) throws IOException {
-        Path pathCsvFile = Paths.get("zuul/res/config_file/game1.csv");
         HashMap<String, Room> allRooms;
-        Supplier<Stream<String>> supplierStreamCsv = loadCsvIntoStream(pathCsvFile);
+        Supplier<Stream<String>> supplierStreamCsv = loadCsvIntoStream(csvFile.toPath());
         allRooms = this.createRooms(supplierStreamCsv);
         this.initialiseExits(supplierStreamCsv, allRooms);
         this.addObjects(supplierStreamCsv, allRooms);

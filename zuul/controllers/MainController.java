@@ -17,15 +17,19 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import zuul.Player;
 import zuul.model.Food;
 import zuul.model.Game;
 import zuul.model.Snake;
 import zuul.mygame.MyGame;
+import zuul.room.Room;
 import zuul.views.MenuView;
 import zuul.views.GameView;
 import zuul.views.SetMapView;
+import zuul.views.SettingView;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class MainController {
     // Primary stage / main scene
@@ -49,22 +53,15 @@ public class MainController {
     private static Stage gameStage;
     private Scene gameScene;
 
-    private CheckBox checkEasy;
-    private CheckBox checkMedium;
-    private CheckBox checkHard;
-
-    private TextField inputGridSizeX;
-    private TextField inputGridSizeY;
-
     private char difficulty;
     private static int X_VALUE;
     private static int Y_VALUE;
 
-    private Button playButton;
 
     // Jé fé ça
     private MyGame game = new zuul.mygame.MyGame("en", "us");
     private SetMapView setMapView = null;
+    private SettingView settingView = null;
     private Scene sceneSetMapView;
     private Scene settingScene;
     private MenuView menuView;
@@ -79,9 +76,12 @@ public class MainController {
         primaryStage.setScene(mainScene);
         primaryStage.setTitle("Word of Zuul - DJG");
         primaryStage.show();
-        initSettingsScene();
 
         initSetMapScene();
+        setAllRooms();
+        game.createPlayer("David");
+        initSettingsScene();
+
         menuView.btnStart().setOnAction(e -> {
             try {
                 setSettingScene();
@@ -114,14 +114,22 @@ public class MainController {
 
     }
 
-    private void setSettingScene() throws IOException {
-        // Charges les cartes en fonctions du fichier select avant
+    private void setAllRooms() throws IOException {
         game.createRooms(setMapView.getImportedFile());
-
+        if (game.getPlayer() != null) {
+            Map.Entry<String, Room> entry = game.getAllRooms().entrySet().iterator().next();
+            Room randomRoom = entry.getValue();
+            game.getPlayer().setCurrentRoom(randomRoom);
+        }
         if (game.getAllRooms() == null || game.getAllRooms().size() < 1) {
             System.out.println("A problem occured. No rooms created.");
-            return ;
         }
+    }
+
+    private void setSettingScene() throws IOException {
+        // Charges les cartes en fonctions du fichier select avant
+        setAllRooms();
+        settingView.updatePanel();
         primaryStage.setScene(settingScene);
     }
 
@@ -138,11 +146,14 @@ public class MainController {
 
         // ajouter aussi le nom du Personnage
         settingScene = new Scene(settingsRoot, mainScene.getWidth(), mainScene.getHeight());
-        settingsLayout(settingsRoot);
-        playButton.setOnAction(e -> {
+        settingView = new SettingView(settingsRoot, primaryStage, mainScene, game);
+        settingView.getPlayButton().setOnAction(e -> {
             // ici lancer le jeu avec la carte choisie, avec les bon settings, et le jeu
             setDifficulty();
-            setGridSize(inputGridSizeX.getText(), inputGridSizeY.getText());
+            //ICI SET PLAYER ET CHARACTER Et carte :)
+            //setGridSize(inputGridSizeX.getText(), inputGridSizeY.getText());
+            setGridSize("10", "10");
+
             initGameStage();
             launchSnake(gameStage);
             gameStage.setScene(gameScene);
@@ -160,50 +171,7 @@ public class MainController {
         sceneSetMapView = new Scene(setMapPaneRoot, mainScene.getWidth(), mainScene.getHeight());
     }
 
-    private void settingsLayout(Pane root) {
-        // ICI AJOUTER NOM, SALLE DE DEPART, ET LES 3 BOUTTONS POUR CHANGER LES ROOMS QUI SONT DANS GAME LA
 
-        Button backBtn = new Button("<- Back");
-        backBtn.setOnAction(ev -> primaryStage.setScene(mainScene));
-        VBox container = new VBox();
-        HBox checkboxesContainer = new HBox();
-        HBox inputsContainer = new HBox();
-
-        container.setAlignment(Pos.CENTER);
-        checkboxesContainer.setAlignment(Pos.CENTER);
-        inputsContainer.setAlignment(Pos.CENTER);
-
-        container.setSpacing(40);
-        checkboxesContainer.setSpacing(20);
-        inputsContainer.setSpacing(20);
-
-        Text title = new Text();
-        title.setText("Settings");
-        title.setFont(Font.font("Comic Sans MS", 20));
-
-        // PEUT ETRE POUR CHOISIR LE SKIN?
-        checkEasy = new CheckBox("Easy");
-        checkMedium = new CheckBox("Normal");
-        checkHard = new CheckBox("Hard");
-
-        // A LA PLACE DE CA METTRE LE NOMBRE DE JOUEURS
-        inputGridSizeX = new TextField();
-        inputGridSizeY = new TextField();
-
-        toggleCheckBoxes(checkEasy, false);
-        toggleCheckBoxes(checkMedium, true);
-        toggleCheckBoxes(checkHard, false);
-
-        inputGridSizeX.setPromptText("width (10-100)");
-        inputGridSizeY.setPromptText("height (10-100)");
-
-        playButton = new Button("Play");
-
-        checkboxesContainer.getChildren().addAll(checkEasy, checkMedium, checkHard);
-        inputsContainer.getChildren().addAll(inputGridSizeX, inputGridSizeY);
-        container.getChildren().addAll(title, backBtn, checkboxesContainer, inputsContainer, playButton);
-        root.getChildren().add(container);
-    }
 
     private void launchSnake(Stage gameStage) {
         Game game = new Game(X_VALUE, Y_VALUE, difficulty);
@@ -246,15 +214,6 @@ public class MainController {
         return gameStage;
     }
 
-    private void toggleCheckBoxes(CheckBox checkBox, boolean selected) {
-        checkBox.setSelected(selected);
-        checkBox.setOnAction(e -> {
-            checkEasy.setSelected(e.getSource().equals(checkEasy));
-            checkMedium.setSelected(e.getSource().equals(checkMedium));
-            checkHard.setSelected(e.getSource().equals(checkHard));
-        });
-    }
-
     public void setGridSize(String width, String height) {
         boolean validGridSize = width.matches("^\\d+$") && height.matches("^\\d+$") && Integer.parseInt(width) >= 10
                 && Integer.parseInt(width) <= 100 && Integer.parseInt(height) >= 10 && Integer.parseInt(height) <= 100;
@@ -272,14 +231,14 @@ public class MainController {
     }
 
     private void setDifficulty() {
-        // changer le path du skin du player?
-        if (checkEasy.isSelected()) {
+        // Difficulté devient la map choisie
+        /*if (checkEasy.isSelected()) {
             difficulty = 'E';
         } else if (checkMedium.isSelected()) {
             difficulty = 'N';
         } else if (checkHard.isSelected()) {
             difficulty = 'H';
-        }
+        }*/
     }
 
     public static Stage getPrimaryStage() {

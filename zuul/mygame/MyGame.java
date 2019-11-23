@@ -21,14 +21,6 @@ public class MyGame extends Game {
     @Override
     public void createRooms(File csvFile) throws IOException {
         allRooms = roomCsvUploader.createRoomsFromCsv(csvFile);
-
-        // TODO FOUTRE CA SUR LES BOUTONS DU PANEL SETTINGS
-        RoomModifyier mod = new RoomModifyier();
-        allRooms = mod.newItemAllRoomWithoutExits(allRooms, "oui", 2);
-        allRooms = mod.removeAllWithoutExits(allRooms);
-        allRooms = mod.removeAllWithoutItems(allRooms);
-
-        setAllRooms(allRooms);
     }
 
     @Override
@@ -44,15 +36,10 @@ public class MyGame extends Game {
     }
 
     @Override
-    protected void createPlayer(String playerName) {
-        // le foutre dans une pièce random
-        //TODO ENLEVER CETTE BOUSE DE FONCTION RANDOM ISSOU
-
+    public void createPlayer(String playerName) {
         Map.Entry<String, Room> entry = allRooms.entrySet().iterator().next();
         Room randomRoom = entry.getValue();
-        //Random r = new Random();
-        //Room randomRoom = allRooms.stream().skip(r.nextInt(allRooms.size()-1)).findFirst().get();
-        setPlayer(new Player(messages.getString(playerName), randomRoom));  // start game outside
+        setPlayer(new Player(playerName, randomRoom));
     }
 
     @Override

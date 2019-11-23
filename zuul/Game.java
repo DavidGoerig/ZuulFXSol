@@ -146,7 +146,7 @@ public abstract class Game {
      * Get the player
      * @return the player
      */
-    protected Player getPlayer() {
+    public Player getPlayer() {
         return player;
     }
 
@@ -155,7 +155,7 @@ public abstract class Game {
      * The game needs to know all the rooms so that it can iterate through them
      * @param all The list of rooms
      */
-    protected void setAllRooms(HashMap<String, Room> all) {
+    public void setAllRooms(HashMap<String, Room> all) {
         allRooms = all;
     }
 
@@ -170,7 +170,7 @@ public abstract class Game {
      */
     protected abstract List<String> getWelcomeStrings();
 
-    protected abstract void createPlayer(String playerName);
+    public abstract void createPlayer(String playerName);
 
     protected abstract void createCharacter();
 

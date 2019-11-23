@@ -24,27 +24,18 @@ import java.util.*;
 
 public class SettingView {
     private Button playButton;
-
-    private String departRoom = null;
     private Game game;
     private TextField inputGridSizeX = new TextField();
     private TextField inputGridSizeY = new TextField();
     private TextField inputObjName = new TextField();
     private TextField inputObjWeight = new TextField();
-
     private TextField inputCharacterName = new TextField();
-
     private HashMap<String, CheckBox> toggleCheckBoxList = new HashMap<>();
-
-
-    private HBox inputsContainer = new HBox();
     private HBox checkboxesContainer = new HBox();
-
     private TableView<Room> table = new TableView<Room>();
     private final ObservableList<Room> data = FXCollections.observableArrayList();
 
-
-    public static boolean isNumeric(String str) {
+    private static boolean isNumeric(String str) {
         try {
             Double.parseDouble(str);
             return true;
@@ -56,10 +47,8 @@ public class SettingView {
     public SettingView(Pane root, Stage primaryStage, Scene mainScene, Game game) {
         RoomModifyier mod = new RoomModifyier();
         this.game = game;
-        // ICI AJOUTER NOM, SALLE DE DEPART, ET LES 3 BOUTTONS POUR CHANGER LES ROOMS QUI SONT DANS GAME LA
         Button backBtn = new Button("<- Back");
         backBtn.setOnAction(ev -> primaryStage.setScene(mainScene));
-
         Button addItemBtn = new Button("Add an item in all room without exits:");
         addItemBtn.setOnAction(ev -> {
             int weight = 1;
@@ -82,8 +71,6 @@ public class SettingView {
             game.setAllRooms(allRooms);
             updatePanel();
         });
-
-
         Button setPlayerName  = new Button("Set player name:");
         setPlayerName.setOnAction(ev -> {
             game.getPlayer().setName(inputCharacterName.getText());
@@ -96,6 +83,7 @@ public class SettingView {
 
         container.setAlignment(Pos.CENTER);
         checkboxesContainer.setAlignment(Pos.CENTER);
+        HBox inputsContainer = new HBox();
         inputsContainer.setAlignment(Pos.CENTER);
         roomChangerContainer.setAlignment(Pos.CENTER);
         deleteRoomContainer.setAlignment(Pos.CENTER);
@@ -155,8 +143,20 @@ public class SettingView {
             updatePanel();
         });
         hboxAddItem.getChildren().addAll(addItemToRoomBtn, inputObjName, inputObjWeight);
+        VBox vbox = createRommTable();
+        HBox vboxAddChar = createCharacters();
 
-        // ICI C LE TABLO
+        playButton = new Button("Play");
+
+        setPlayerNameContainer.getChildren().addAll(setPlayerName, inputCharacterName);
+        roomChangerContainer.getChildren().addAll(addItemBtn, inputsContainer);
+        deleteRoomContainer.getChildren().addAll(removeAllRoomNoItemBtn, removeNoExitBtn);
+        inputsContainer.getChildren().addAll(inputGridSizeX, inputGridSizeY);
+        container.getChildren().addAll(title, titleMapPart, vbox, hboxAddItem, roomChangerContainer, deleteRoomContainer, titleSetPlayer, setPlayerNameContainer, checkboxesContainer, titleSetCharacter, vboxAddChar, playButton, backBtn);
+        root.getChildren().add(container);
+    }
+
+    private VBox createRommTable() {
         data.clear();
         HashMap<String, Room> allroom = this.game.getAllRooms();
         Iterator iterator = allroom.entrySet().iterator();
@@ -171,7 +171,6 @@ public class SettingView {
         nameCol.setMinWidth(100);
         nameCol.setCellValueFactory(
                 new PropertyValueFactory<Room, String>("name"));
-
         TableColumn descCol = new TableColumn("Description");
         descCol.setMinWidth(200);
         descCol.setCellValueFactory(
@@ -246,9 +245,16 @@ public class SettingView {
             game.deleteRoom(r);
             updatePanel();
         });
+        table.setItems(data);
+        table.getColumns().addAll(nameCol, descCol, exitNorthCol, exitEastCol, exitSoutCol, exitWestCol, itemCol, characterCol);
+        final VBox vbox = new VBox();
+        vbox.setSpacing(5);
+        vbox.setPadding(new Insets(10, 0, 0, 10));
+        vbox.getChildren().addAll(table, removeRoomBtn);
+        return vbox;
+    }
 
-        //ICI C LES CHARACTERS
-
+    private HBox createCharacters() {
         TextField setCharacterName = new TextField();
         setCharacterName.setPrefWidth(200);
         setCharacterName.setPromptText("Cecilia");
@@ -263,43 +269,13 @@ public class SettingView {
             if (setCharacterName.getText() != "")
                 name = setCharacterName.getText();
             game.createCharacter(name, r);
-
-
             updatePanel();
         });
         vboxAddChar.getChildren().addAll(addCharacterBtn, setCharacterName);
-
-
-
-
-        table.setItems(data);
-        table.getColumns().addAll(nameCol, descCol, exitNorthCol, exitEastCol, exitSoutCol, exitWestCol, itemCol, characterCol);
-
-        final VBox vbox = new VBox();
-        vbox.setSpacing(5);
-        vbox.setPadding(new Insets(10, 0, 0, 10));
-        vbox.getChildren().addAll(table);
-        //FIN TABLO
-
-        playButton = new Button("Play");
-
-        setPlayerNameContainer.getChildren().addAll(setPlayerName, inputCharacterName);
-        roomChangerContainer.getChildren().addAll(addItemBtn, inputsContainer);
-        deleteRoomContainer.getChildren().addAll(removeAllRoomNoItemBtn, removeNoExitBtn);
-        inputsContainer.getChildren().addAll(inputGridSizeX, inputGridSizeY);
-        container.getChildren().addAll(title, titleMapPart, vbox, removeRoomBtn, hboxAddItem, roomChangerContainer, deleteRoomContainer, titleSetPlayer, setPlayerNameContainer, checkboxesContainer, titleSetCharacter, vboxAddChar, playButton, backBtn);
-        root.getChildren().add(container);
+        return vboxAddChar;
     }
 
-    private void updateToggleCheckboxes() {
-        if (game.getAllRooms().size() == 0) {
-            return;
-        }
-        // put the player in the first room
-        Map.Entry<String, Room> entry = game.getAllRooms().entrySet().iterator().next();
-        Room randomRoom = entry.getValue();
-        game.getPlayer().setCurrentRoom(randomRoom);
-        //create the toggle check box
+    private void createToggles() {
         toggleCheckBoxList.clear();
         HashMap<String, Room> allroom = this.game.getAllRooms();
         Iterator iterator = allroom.entrySet().iterator();
@@ -310,9 +286,9 @@ public class SettingView {
             checkBox.setSelected(false);
             toggleCheckBoxList.put(room.getName(), checkBox);
         }
+    }
 
-        // put the box in the hbox
-
+    private void togglesInHbow() {
         toggleCheckBoxList.get(game.getPlayer().getCurrentRoom().getName()).setSelected(true);
         checkboxesContainer.getChildren().clear();
         Iterator it = toggleCheckBoxList.entrySet().iterator();
@@ -338,10 +314,23 @@ public class SettingView {
         }
     }
 
+    private void updateToggleCheckboxes() {
+        if (game.getAllRooms().size() == 0) {
+            return;
+        }
+        // put the player in the first room
+        Map.Entry<String, Room> entry = game.getAllRooms().entrySet().iterator().next();
+        Room randomRoom = entry.getValue();
+        game.getPlayer().setCurrentRoom(randomRoom);
+        //create the toggle check box
+        createToggles();
+        // put the box in the hbox
+        togglesInHbow();
+
+    }
+
     public void updatePanel() {
-        // bien mettre la room de départ choisie
         updateToggleCheckboxes();
-        // tab room update
         data.clear();
         HashMap<String, Room> allroom = this.game.getAllRooms();
         Iterator iterator = allroom.entrySet().iterator();

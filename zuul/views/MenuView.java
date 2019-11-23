@@ -54,6 +54,12 @@ public class MenuView {
     rootPane.setBackground(new Background(myBF));
   }
 
+
+  private void setTitles() {
+    title = ViewUtils.createTitles(Game.messages.getString("title"), 45);
+    subTitle = ViewUtils.createTitles(Game.messages.getString("subTitle"), 22);
+    authTitle = ViewUtils.createTitles(Game.messages.getString("authTitle"), 12);
+  }
   /**
    * set root Pane size padding and bg
    * @param rootPane root Pane
@@ -68,10 +74,7 @@ public class MenuView {
 
     Image frImg = new Image("zuul/views/res/fr.png");
     btnFr.setGraphic(new ImageView(frImg));
-
-    title = ViewUtils.createTitles(Game.messages.getString("title"), 45);
-    subTitle = ViewUtils.createTitles(Game.messages.getString("subTitle"), 22);
-     authTitle = ViewUtils.createTitles(Game.messages.getString("authTitle"), 12);
+    setTitles();
 
     VBox.setMargin(title, new Insets(0, 0, 50, 0));
     VBox.setMargin(subTitle, new Insets(0, 0, 30, 0));

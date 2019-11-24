@@ -5,12 +5,12 @@ import java.awt.*;
 import java.util.Random;
 
 public class ItemDraw {
-    private String[] paths = {"zuul/views/res/avocado.png", "zuul/views/res/carrot.png", "zuul/views/res/broccoli.png"};
     private Point pos;
     private Image image;
 
     public ItemDraw(int gridx, int gridy, MovingPlayer movingPlayer) {
-        this.image = new Image(randomImage(paths));
+        String path = "zuul/views/res/item.png";
+        this.image = new Image(path);
         pos = randomPos(gridx, gridy);
     }
 

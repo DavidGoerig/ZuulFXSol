@@ -6,7 +6,7 @@ import java.awt.*;
 import java.util.Random;
 
 public class PlayerImg {
-    private String paths = "zuul/views/res/avocado.png";
+    private String paths = "zuul/views/res/character.png";
     private Image image;
 
     public PlayerImg() {

@@ -48,10 +48,10 @@ public class GameController {
         this.gameBoard = gameBoard;
         this.exits = new HashMap<String, Exit>();
         items = createItem();
-        exits.put("west", new Exit(0, 15, movingPlayer));
-        exits.put("north", new Exit(15, 0, movingPlayer));
-        exits.put("south", new Exit(15, 29, movingPlayer));
-        exits.put("east", new Exit(29, 15, movingPlayer));
+        exits.put("west", new Exit(0, 15, "west"));
+        exits.put("north", new Exit(15, 0, "north"));
+        exits.put("south", new Exit(15, 29, "south"));
+        exits.put("east", new Exit(29, 15, "east"));
 
         animation.setCycleCount(Animation.INDEFINITE);
     }

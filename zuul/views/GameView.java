@@ -5,17 +5,15 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import zuul.Game;
 import zuul.Item;
 import zuul.model.*;
-import zuul.room.Room;
-
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class GameView {
@@ -33,30 +31,39 @@ public class GameView {
         this.game = game;
     }
 
-    public void makeScene(HashMap<String, Exit> exits, Scene scene, MovingPlayer movingPlayer, HashMap<Item, ItemDraw> items) {
+    public void makeScene(HashMap<String, Exit> exits, Scene scene, MovingPlayer movingPlayer, HashMap<Item, ItemDraw> items, List<CharacterDraw> characters) {
         gridCanvas = new Canvas(scene.getWidth() - 400, scene.getHeight());
         gc = gridCanvas.getGraphicsContext2D();
-        drawGrid(items, exits, movingPlayer, gc);
+        drawGrid(items, exits, movingPlayer, gc, characters);
 
-
-        roomNameLabel = new Label(game.getPlayer().getCurrentRoom().getName());
-        roomNameLabel.setFont(new Font("Verdana", 15));
-
-        roomDescLabel = new Label(game.getPlayer().getCurrentRoom().getDescription());
-        roomDescLabel.setFont(new Font("Verdana", 15));
-
-        userName = new Label("Player name: " + game.getPlayer().getName());
-        userName.setFont(new Font("Verdana", 15));
+        roomNameLabel = labelCreator(game.getPlayer().getCurrentRoom().getName());
+        roomDescLabel = labelCreator(game.getPlayer().getCurrentRoom().getDescription());
+        userName = labelCreator(game.getPlayer().getName());
     }
 
-    public void drawGrid(HashMap<Item, ItemDraw> items, HashMap<String, Exit> exits, MovingPlayer movingPlayer, GraphicsContext gc) {
+    private Label labelCreator(String txt) {
+        Label label = new Label(txt);
+        label.setFont(new Font("Verdana", 15));
+        label.setTextFill(Color.WHITE);
+        return label;
+    }
+
+    public void drawGrid(HashMap<Item, ItemDraw> items, HashMap<String, Exit> exits, MovingPlayer movingPlayer, GraphicsContext gc, List<CharacterDraw> characters) {
         gc.setFill(Color.web("#dedede"));
         gc.fillRect(0, 0, gridCanvas.getWidth(), gridCanvas.getHeight());
 
-        Room actualRoom = game.getPlayer().getCurrentRoom();
         drawExits(exits);
         drawItems(items);
         drawHead(movingPlayer);
+        drawCharacters(characters);
+    }
+
+    private void drawCharacters(List<CharacterDraw> characters) {
+        for (CharacterDraw i : characters) {
+            gc.drawImage(i.getImage(), i.getPos().x * scale, i.getPos().y * scale,
+                    scale + 5, scale + 5);
+        }
+
     }
 
     private void drawExits(HashMap<String, Exit> exits) {

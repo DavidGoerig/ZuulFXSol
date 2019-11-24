@@ -46,18 +46,18 @@ public class MovingPlayer {
         }
     }
 
-    public boolean takeItem(HashMap <Item, ItemDraw> items) {
+    public String takeItem(HashMap <Item, ItemDraw> items) {
         Iterator iterator = items.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry me2 = (Map.Entry) iterator.next();
             ItemDraw item = (ItemDraw) me2.getValue();
             if (head.equals(item.getPos())) {
                 Item itemOn = (Item) me2.getKey();
-                System.out.println("LA ON EST SUR LE:" + itemOn.getDescription());
+                return itemOn.getDescription();
             }
         }
         // TROUVER QUEL ITEM C, le take
-        return false;
+        return null;
     }
 
     private boolean hitWalls() {
@@ -68,16 +68,37 @@ public class MovingPlayer {
         return new Point(head);
     }
 
-    public boolean goAway(HashMap<String, Exit> exits) {
+    public String goAway(HashMap<String, Exit> exits) {
         Iterator iterator = exits.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry me2 = (Map.Entry) iterator.next();
             Exit exit = (Exit) me2.getValue();
             if (head.equals(exit.getPos())) {
                 System.out.println("ON EST SORTIE: " + me2.getKey());
-                return true;
+                String dir = (String) me2.getKey();
+                return dir;
             }
         }
-        return false;
+        return null;
+    }
+
+    public void moveOpposite(String dirToMove) {
+        switch (dirToMove) {
+            case "south":
+                head.translate(0, -1);
+                break;
+
+            case "north":
+                head.translate(0, 1);
+                break;
+
+            case "east":
+                head.translate(-1, 0);
+                break;
+
+            case "west":
+                head.translate(1, 0);
+                break;
+        }
     }
 }

@@ -31,6 +31,11 @@ public class Room
     final private String description;
     /** Name of the room */
     final private String name;
+
+    public Map<String, Room> getExits() {
+        return exits;
+    }
+
     /** Exits from the room */
     final private Map<String, Room> exits;
 
@@ -235,5 +240,9 @@ public class Room
 
     public String getName() {
         return name;
+    }
+
+    public Map<String, Character> getCharacters() {
+        return characters;
     }
 }

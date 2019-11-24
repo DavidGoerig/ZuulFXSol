@@ -3,26 +3,31 @@ package zuul.controllers;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
 import javafx.util.Duration;
+import zuul.Character;
 import zuul.Game;
 import zuul.Item;
-import zuul.model.Exit;
-import zuul.model.GameBoard;
-import zuul.model.ItemDraw;
-import zuul.model.MovingPlayer;
+import zuul.model.*;
+import zuul.room.Room;
 import zuul.views.GameView;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class GameController {
     private MovingPlayer movingPlayer;
 
+    public HBox getButtonMapBox() {
+        return buttonMapBox;
+    }
+
+    private HBox buttonMapBox = new HBox();
     public HashMap<Item, ItemDraw> getItems() {
         return items;
     }
@@ -31,6 +36,7 @@ public class GameController {
     private GameView gameView;
     private GameBoard gameBoard;
     private Game game;
+    private List<CharacterDraw> characters = new ArrayList<>();
 
     public HashMap<String, Exit> getExits() {
         return exits;
@@ -39,7 +45,6 @@ public class GameController {
     private HashMap<String, Exit> exits;
 
     private static KeyCode key = KeyCode.W;
-    private boolean started = false;
 
     public GameController(MovingPlayer movingPlayer, GameBoard gameBoard, GameView gameView, Game game) {
         this.game = game;
@@ -48,40 +53,61 @@ public class GameController {
         this.gameBoard = gameBoard;
         this.exits = new HashMap<String, Exit>();
         items = createItem();
+        characters = createCharacters();
         exits.put("west", new Exit(0, 15, "west"));
         exits.put("north", new Exit(15, 0, "north"));
         exits.put("south", new Exit(15, 29, "south"));
         exits.put("east", new Exit(29, 15, "east"));
-
         animation.setCycleCount(Animation.INDEFINITE);
     }
 
-    private final Timeline animation = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> {
-        if (true) {
-            if (key.equals(KeyCode.LEFT)) {
-                movingPlayer.move('L');
-                key = KeyCode.W;
-            } else if (key.equals(KeyCode.RIGHT)) {
-                movingPlayer.move('R');
-                key = KeyCode.W;
-            } else if (key.equals(KeyCode.UP)) {
-                movingPlayer.move('U');
-                key = KeyCode.W;
-            } else if (key.equals(KeyCode.DOWN)) {
-                movingPlayer.move('D');
-                key = KeyCode.W;
-            }
-
-            if (movingPlayer.takeItem(items)) {
-                System.out.println("LA ON EST SUR UN ITEM");
-                // Ici juste take l'item, et trouver lequel
-            }
-            if (movingPlayer.goAway(exits)) {
-
-            }
-            gameView.drawGrid(items, exits, movingPlayer, gameView.getGraphicsContext());
-            updateLabel();
+    private void movePlayer() {
+        if (key.equals(KeyCode.LEFT)) {
+            movingPlayer.move('L');
+            key = KeyCode.W;
+        } else if (key.equals(KeyCode.RIGHT)) {
+            movingPlayer.move('R');
+            key = KeyCode.W;
+        } else if (key.equals(KeyCode.UP)) {
+            movingPlayer.move('U');
+            key = KeyCode.W;
+        } else if (key.equals(KeyCode.DOWN)) {
+            movingPlayer.move('D');
+            key = KeyCode.W;
         }
+    }
+
+    private void checkItem() {
+        String itemOn = movingPlayer.takeItem(items);
+        if (itemOn != null) {
+            game.getPlayer().take(itemOn);
+            items = createItem();
+        }
+    }
+
+    private void checkExit() {
+        String dirToMove = movingPlayer.goAway(exits);
+        if (dirToMove != null) {
+            if (game.getPlayer().goRoom(dirToMove)) {
+                reset();
+            } else {
+                movingPlayer.moveOpposite(dirToMove);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("No exit here sorry!");
+                alert.setHeaderText("Exit not available.");
+                alert.setContentText("No " + dirToMove +" exit");
+                alert.show();
+            }
+        }
+    }
+
+    private final Timeline animation = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> {
+        movePlayer();
+        checkItem();
+        checkExit();
+        gameView.drawGrid(items, exits, movingPlayer, gameView.getGraphicsContext(), characters);
+        updateLabel();
+        gameView.getGridCanvas().requestFocus();
     }));
 
     private void updateLabel() {
@@ -89,21 +115,17 @@ public class GameController {
         gameView.roomDescLabel(game.getPlayer().getCurrentRoom().getDescription());
     }
 
-    public void handle(KeyEvent event) {
+    void handle(KeyEvent event) {
         KeyCode keyCode = event.getCode();
-        if (keyCode.isArrowKey() && !started) {
+        if (keyCode.isArrowKey()) {
             animation.play();
-            started = true;
         }
-
         if (validKey(keyCode)) {
             key = event.getCode();
         }
-
         if (keyCode.equals(KeyCode.R)) {
             reset();
         }
-
         KeyCombination keyCombination = new KeyCodeCombination(KeyCode.T, KeyCombination.SHIFT_ANY,
                 KeyCombination.SHORTCUT_DOWN);
         if (keyCombination.match(event)) {
@@ -111,7 +133,6 @@ public class GameController {
             MainController.getPrimaryStage().show();
             MainController.getPrimaryStage().setScene(MainController.getMainScene());
         }
-
         if (keyCode.equals(KeyCode.ESCAPE)) {
             System.exit(0);
         }
@@ -124,17 +145,47 @@ public class GameController {
                 || (key.equals(KeyCode.UP) && !key().equals(KeyCode.DOWN));
     }
 
-    public void reset() {
-        started = false;
+    private void reset() {
+
+        updateButtonMapChanging();
         animation.jumpTo(Duration.ZERO);
         animation.stop();
 
         movingPlayer = new MovingPlayer(gameBoard.getWidth(), gameBoard.getHeight());
         items = createItem();
-        key = KeyCode.LEFT;
+        characters = createCharacters();
         updateLabel();
+        gameView.drawGrid(items, exits, movingPlayer, gameView.getGraphicsContext(), characters);
+        gameView.getGridCanvas().requestFocus();
+    }
 
-        gameView.drawGrid(items, exits, movingPlayer, gameView.getGraphicsContext());
+    void updateButtonMapChanging() {
+        buttonMapBox.getChildren().clear();
+        Map<String, Room> exits = game.getPlayer().getCurrentRoom().getExits();
+        Iterator iterator = exits.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry me2 = (Map.Entry) iterator.next();
+            Room r = (Room) me2.getValue();
+            String s = (String) me2.getKey();
+            if (r != null) {
+                Button b = new Button(s + ": " + r.getName());
+                b.setOnAction(e -> {
+                    game.getPlayer().goRoom(s);
+                    reset();
+                });
+                buttonMapBox.getChildren().addAll(b);
+            }
+        }
+    }
+
+    private List<CharacterDraw> createCharacters() {
+        List<CharacterDraw> al = new ArrayList<>();
+        Map<String, Character> allChar = game.getPlayer().getCurrentRoom().getCharacters();
+        Iterator iterator = allChar.entrySet().iterator();
+        while (iterator.hasNext()) {
+            al.add(new CharacterDraw(gameBoard.getWidth(), gameBoard.getHeight()));
+        }
+        return al;
     }
 
     private HashMap<Item, ItemDraw> createItem() {
@@ -153,4 +204,7 @@ public class GameController {
         return key;
     }
 
+    public List<CharacterDraw> getCharacters() {
+        return  characters;
+    }
 }

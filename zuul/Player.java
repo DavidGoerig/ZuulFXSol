@@ -138,14 +138,16 @@ public class Player {
      * Go to another room
      * @param direction the name of the door to use - check the door exists
      */
-    public void goRoom(String direction) {
+    public boolean goRoom(String direction) {
         // Try to leave current room.
         Room nextRoom = getCurrentRoom().getExit(direction);
         if (nextRoom == null) {
             Game.out.println(Game.messages.getString("door")); // There is no door!
+            return false;
         } else {
             setCurrentRoom(nextRoom);
             look();
         }
+        return true;
     }
 }

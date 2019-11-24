@@ -32,7 +32,12 @@ public class Room
     /** Name of the room */
     final private String name;
     /** Exits from the room */
-    final private Map<String, Room> exits;   
+    final private Map<String, Room> exits;
+
+    public Map<String, Item> getItems() {
+        return items;
+    }
+
     /** Items in the room */
     final private Map<String, Item> items;
     /** Characters in the room */

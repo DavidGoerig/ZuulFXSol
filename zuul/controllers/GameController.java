@@ -7,20 +7,29 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
+import zuul.Game;
+import zuul.Item;
 import zuul.model.Exit;
-import zuul.model.Item;
-import zuul.model.Game;
+import zuul.model.GameBoard;
+import zuul.model.ItemDraw;
 import zuul.model.MovingPlayer;
 import zuul.views.GameView;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class GameController {
     private MovingPlayer movingPlayer;
-    private Item item;
+
+    public HashMap<Item, ItemDraw> getItems() {
+        return items;
+    }
+
+    private HashMap <Item, ItemDraw> items;
     private GameView gameView;
+    private GameBoard gameBoard;
     private Game game;
 
     public HashMap<String, Exit> getExits() {
@@ -29,15 +38,16 @@ public class GameController {
 
     private HashMap<String, Exit> exits;
 
-    public static KeyCode key = KeyCode.W;
+    private static KeyCode key = KeyCode.W;
     private boolean started = false;
 
-    public GameController(MovingPlayer movingPlayer, Item item, Game game, GameView gameView) {
-        this.movingPlayer = movingPlayer;
-        this.item = item;
-        this.gameView = gameView;
+    public GameController(MovingPlayer movingPlayer, GameBoard gameBoard, GameView gameView, Game game) {
         this.game = game;
+        this.movingPlayer = movingPlayer;
+        this.gameView = gameView;
+        this.gameBoard = gameBoard;
         this.exits = new HashMap<String, Exit>();
+        items = createItem();
         exits.put("west", new Exit(0, 15, movingPlayer));
         exits.put("north", new Exit(15, 0, movingPlayer));
         exits.put("south", new Exit(15, 29, movingPlayer));
@@ -48,8 +58,6 @@ public class GameController {
 
     private final Timeline animation = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> {
         if (true) {
-            gameView.updateTimerLabel("YES HOMIE");
-
             if (key.equals(KeyCode.LEFT)) {
                 movingPlayer.move('L');
                 key = KeyCode.W;
@@ -64,18 +72,22 @@ public class GameController {
                 key = KeyCode.W;
             }
 
-            if (movingPlayer.takeItem(item)) {
+            if (movingPlayer.takeItem(items)) {
                 System.out.println("LA ON EST SUR UN ITEM");
                 // Ici juste take l'item, et trouver lequel
-                newFood();
             }
             if (movingPlayer.goAway(exits)) {
 
             }
-            gameView.drawGrid(exits, item, movingPlayer, gameView.getGraphicsContext());
-            gameView.updateScoreLabel();
+            gameView.drawGrid(items, exits, movingPlayer, gameView.getGraphicsContext());
+            updateLabel();
         }
     }));
+
+    private void updateLabel() {
+        gameView.updateRoomNameLabel(game.getPlayer().getCurrentRoom().getName());
+        gameView.roomDescLabel(game.getPlayer().getCurrentRoom().getDescription());
+    }
 
     public void handle(KeyEvent event) {
         KeyCode keyCode = event.getCode();
@@ -117,17 +129,24 @@ public class GameController {
         animation.jumpTo(Duration.ZERO);
         animation.stop();
 
-        movingPlayer = new MovingPlayer(game.getWidth(), game.getHeight());
-        item = new Item(game.getWidth(), game.getHeight(), movingPlayer);
-
+        movingPlayer = new MovingPlayer(gameBoard.getWidth(), gameBoard.getHeight());
+        items = createItem();
         key = KeyCode.LEFT;
-        gameView.updateScoreLabel();
+        updateLabel();
 
-        gameView.drawGrid(exits, item, movingPlayer, gameView.getGraphicsContext());
+        gameView.drawGrid(items, exits, movingPlayer, gameView.getGraphicsContext());
     }
 
-    private void newFood() {
-        new Item(game.getWidth(), game.getHeight(), movingPlayer);
+    private HashMap<Item, ItemDraw> createItem() {
+        Map<String, Item> itemFromRoom = game.getPlayer().getCurrentRoom().getItems();
+        HashMap<Item, ItemDraw> itemFromRoomDraw = new HashMap<>();
+        Iterator iterator = itemFromRoom.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry me2 = (Map.Entry) iterator.next();
+            Item tmp = (Item) me2.getValue();
+            itemFromRoomDraw.put(tmp, new ItemDraw(gameBoard.getWidth(), gameBoard.getHeight(), movingPlayer));
+        }
+        return itemFromRoomDraw;
     }
 
     private static KeyCode key() {

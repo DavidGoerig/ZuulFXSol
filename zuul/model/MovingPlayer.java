@@ -1,5 +1,7 @@
 package zuul.model;
 
+import zuul.Item;
+
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,10 +46,18 @@ public class MovingPlayer {
         }
     }
 
-    public boolean takeItem(Item item) {
-        boolean ate = head.equals(item.getPos());
+    public boolean takeItem(HashMap <Item, ItemDraw> items) {
+        Iterator iterator = items.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry me2 = (Map.Entry) iterator.next();
+            ItemDraw item = (ItemDraw) me2.getValue();
+            if (head.equals(item.getPos())) {
+                Item itemOn = (Item) me2.getKey();
+                System.out.println("LA ON EST SUR LE:" + itemOn.getDescription());
+            }
+        }
         // TROUVER QUEL ITEM C, le take
-        return ate;
+        return false;
     }
 
     private boolean hitWalls() {

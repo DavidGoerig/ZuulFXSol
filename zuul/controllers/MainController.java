@@ -4,16 +4,19 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import zuul.model.Item;
-import zuul.model.Game;
+import zuul.Item;
+import zuul.model.ItemDraw;
+import zuul.model.GameBoard;
 import zuul.model.MovingPlayer;
 import zuul.mygame.MyGame;
 import zuul.room.Room;
@@ -23,6 +26,7 @@ import zuul.views.SetMapView;
 import zuul.views.SettingView;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MainController {
@@ -47,7 +51,6 @@ public class MainController {
     private static Stage gameStage;
     private Scene gameScene;
 
-    private char difficulty;
     private static int X_VALUE;
     private static int Y_VALUE;
 
@@ -136,7 +139,7 @@ public class MainController {
             //ICI SET PLAYER ET CHARACTER Et carte :)
             setGridSize("30", "30");
             initGameStage();
-            launchSnake(gameStage);
+            launchGame(gameStage);
             gameStage.setScene(gameScene);
             primaryStage.close();
             gameStage.show();
@@ -154,37 +157,51 @@ public class MainController {
 
 
 
-    private void launchSnake(Stage gameStage) {
-        Game game = new Game(X_VALUE, Y_VALUE);
-        MovingPlayer movingPlayer = new MovingPlayer(game.getWidth(), game.getHeight());
-        Item item = new Item(game.getWidth(), game.getHeight(), movingPlayer);
+    private void launchGame(Stage gameStage) {
+        GameBoard gameBoardDef = new GameBoard(X_VALUE, Y_VALUE);
+        MovingPlayer movingPlayer = new MovingPlayer(gameBoardDef.getWidth(), gameBoardDef.getHeight());
 
+        HashMap<Item, ItemDraw> items;
         GameView gameView = new GameView(game);
-        GameController controller = new GameController(movingPlayer, item, game, gameView);
+        GameController controller = new GameController(movingPlayer, gameBoardDef, gameView, game);
 
         StackPane gameRoot = new StackPane();
 
-        gameScene = new Scene(gameRoot, game.getWidth() * 20 + 200, game.getHeight() * 20);
+        gameScene = new Scene(gameRoot, gameBoardDef.getWidth() * 20 + 400, gameBoardDef.getHeight() * 20);
 
         gameScene.setOnKeyPressed(e -> controller.handle(e));
 
-        gameView.makeScene(controller.getExits(), gameScene, movingPlayer, item);
+        gameView.makeScene(controller.getExits(), gameScene, movingPlayer, controller.getItems());
         HBox layout = new HBox();
         StackPane gameBoard = new StackPane();
-        gameBoard.getChildren().addAll(gameView.getGridCanvas(), gameView.getGameOverLabel(), gameView.getUserName());
+        gameBoard.getChildren().addAll(gameView.getGridCanvas());
         gameBoard.setPadding(new Insets(10));
         StackPane.setAlignment(gameView.getGridCanvas(), Pos.CENTER_RIGHT);
-        StackPane.setAlignment(gameView.getGameOverLabel(), Pos.TOP_CENTER);
 
         VBox panel = new VBox();
-        panel.getChildren().addAll(gameView.getScoreLabel(), gameView.getTimerLabel());
-        panel.setAlignment(Pos.CENTER);
+        Label nameLabel = createLabel("Room name: ");
+        Label descLabel = createLabel("Description: ");
+        Label playerNameLabel = createLabel("Name: ");
+        Label playerLabel = createLabel("Player items: ");
+        Label roomItemLabel = createLabel("Item in the room: ");
+        Label roomCharacterLabel = createLabel("Character in the room: ");
+        panel.getChildren().addAll(playerNameLabel, gameView.getUserName(), nameLabel, gameView.getRoomNameLabel(), descLabel, gameView.getRoomDescLabel(), playerLabel, roomItemLabel, roomCharacterLabel);
+        //panel.setAlignment(Pos.CENTER);
+
+        panel.setPrefWidth(400);
+        panel.setPadding(new Insets(10));
 
         layout.getChildren().addAll(panel, gameBoard);
         layout.setAlignment(Pos.CENTER_RIGHT);
 
         gameRoot.getChildren().addAll(layout);
+    }
 
+    private Label createLabel(String descRoom) {
+        Label label = new Label(descRoom);
+        label.setFont(new Font("Verdana", 20));
+        label.setStyle("-fx-font-weight: bold;");
+        return label;
     }
 
     public void initGameStage() {

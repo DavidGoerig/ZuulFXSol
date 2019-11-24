@@ -9,7 +9,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import zuul.Game;
+import zuul.Item;
 import zuul.model.*;
+import zuul.room.Room;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,45 +22,40 @@ public class GameView {
     private Canvas gridCanvas;
     private GraphicsContext gc;
 
-    private Label gameOverLabel;
-    private Label scoreLabel;
-    private Label timer;
-    private boolean showGameOver = false;
+    private Label roomNameLabel;
+    private Label roomDescLabel;
 
     private Game game;
-    private TextField userName;
+    private Label userName;
     private final int scale = 20;
 
     public GameView(Game game) {
         this.game = game;
     }
 
-    public void makeScene(HashMap<String, Exit> exits, Scene scene, MovingPlayer movingPlayer, Item item) {
-        gridCanvas = new Canvas(scene.getWidth() - 200, scene.getHeight());
+    public void makeScene(HashMap<String, Exit> exits, Scene scene, MovingPlayer movingPlayer, HashMap<Item, ItemDraw> items) {
+        gridCanvas = new Canvas(scene.getWidth() - 400, scene.getHeight());
         gc = gridCanvas.getGraphicsContext2D();
-        drawGrid(exits, item, movingPlayer, gc);
+        drawGrid(items, exits, movingPlayer, gc);
 
-        gameOverLabel = new Label("GAME OVER");
-        gameOverLabel.setVisible(false);
 
-        scoreLabel = new Label("Score: " + "Yeah");
-        scoreLabel.setFont(new Font("Arial", 20));
+        roomNameLabel = new Label(game.getPlayer().getCurrentRoom().getName());
+        roomNameLabel.setFont(new Font("Verdana", 15));
 
-        timer = new Label("Time: ");
-        timer.setFont(new Font("Arial", 20));
+        roomDescLabel = new Label(game.getPlayer().getCurrentRoom().getDescription());
+        roomDescLabel.setFont(new Font("Verdana", 15));
 
-        userName = new TextField("Name");
-        userName.setVisible(false);
-        userName.setAlignment(Pos.CENTER);
-        userName.setMaxWidth(200);
+        userName = new Label("Player name: " + game.getPlayer().getName());
+        userName.setFont(new Font("Verdana", 15));
     }
 
-    public void drawGrid(HashMap<String, Exit> exits, Item item, MovingPlayer movingPlayer, GraphicsContext gc) {
+    public void drawGrid(HashMap<Item, ItemDraw> items, HashMap<String, Exit> exits, MovingPlayer movingPlayer, GraphicsContext gc) {
         gc.setFill(Color.web("#dedede"));
         gc.fillRect(0, 0, gridCanvas.getWidth(), gridCanvas.getHeight());
 
+        Room actualRoom = game.getPlayer().getCurrentRoom();
         drawExits(exits);
-        drawFood(item);
+        drawItems(items);
         drawHead(movingPlayer);
     }
 
@@ -71,10 +69,14 @@ public class GameView {
         }
     }
 
-    private void drawFood(Item item) {
-        gc.drawImage(item.getImage(), item.getPos().x * scale, item.getPos().y * scale,
-                scale + 5, scale + 5);
-
+    private void drawItems(HashMap <Item, ItemDraw> items) {
+        Iterator iterator = items.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry me2 = (Map.Entry) iterator.next();
+            ItemDraw item = (ItemDraw) me2.getValue();
+            gc.drawImage(item.getImage(), item.getPos().x * scale, item.getPos().y * scale,
+                    scale + 5, scale + 5);
+        }
     }
 
     private void drawHead(MovingPlayer movingPlayer) {
@@ -86,12 +88,12 @@ public class GameView {
 
     }
 
-    public void updateScoreLabel() {
-        scoreLabel.setText("Score: " + "Yes");
+    public void updateRoomNameLabel(String name) {
+        roomNameLabel.setText(name);
     }
 
-    public void updateTimerLabel(String time) {
-        timer.setText("Time: " + time);
+    public void roomDescLabel(String desc) {
+        roomDescLabel.setText(desc);
     }
 
     public Canvas getGridCanvas() {
@@ -102,19 +104,15 @@ public class GameView {
         return gc;
     }
 
-    public Label getGameOverLabel() {
-        return gameOverLabel;
+    public Label getRoomNameLabel() {
+        return roomNameLabel;
     }
 
-    public Label getScoreLabel() {
-        return scoreLabel;
+    public Label getRoomDescLabel() {
+        return roomDescLabel;
     }
 
-    public Label getTimerLabel() {
-        return timer;
-    }
-
-    public TextField getUserName() {
+    public Label getUserName() {
         return userName;
     }
 }

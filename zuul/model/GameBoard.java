@@ -1,10 +1,10 @@
 package zuul.model;
 
-public class Game {
+public class GameBoard {
     private int width;
     private int height;
 
-    public Game(int x, int y) {
+    public GameBoard(int x, int y) {
         width = x;
         height = y;
     }

@@ -1,25 +1,24 @@
 package zuul.model;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-public class Snake {
-    private boolean dead = false;
+public class MovingPlayer {
     private final Point head = new Point();
-    private final ArrayList<Point> body = new ArrayList<>();
     private final int x;
     private final int y;
 
-    public Snake(int x, int y) {
+    public MovingPlayer(int x, int y) {
         this.head.setLocation(x / 2, y / 2);
-        this.body.add(new Point(x / 2, y / 2 + 1));
         this.x = x;
         this.y = y;
     }
 
     public void move(char dir) {
-        body.add(new Point(head));
         Point currentLocation = head.getLocation();
+        System.out.println(currentLocation);
 
         switch (dir) {
         case 'U':
@@ -39,22 +38,15 @@ public class Snake {
             break;
         }
 
-        if (hitSelf() || hitWalls()) {
+        System.out.println(currentLocation);
+        if (hitWalls()) {
             head.setLocation(currentLocation);
-            dead = true;
         }
     }
 
-    public boolean ateFood(Food food) {
-        boolean ate = head.equals(food.getPos());
-        if (!ate) {
-            body.remove(0);
-        } else if (food.decreaseLength()) {
-            body.remove(0);
-            if (body.size() > 1) {
-                body.remove(0);
-            }
-        }
+    public boolean takeItem(Item item) {
+        boolean ate = head.equals(item.getPos());
+        // TROUVER QUEL ITEM C, le take
         return ate;
     }
 
@@ -62,19 +54,20 @@ public class Snake {
         return head.getX() < 0 || head.getY() < 0 || head.getX() >= x || head.getY() >= y;
     }
 
-    public boolean hitSelf() {
-        return body.contains(head);
-    }
-
-    public ArrayList<Point> getBody() {
-        return new ArrayList<>(body);
-    }
-
     public Point getHead() {
         return new Point(head);
     }
 
-    public boolean isDead() {
-        return dead;
+    public boolean goAway(HashMap<String, Exit> exits) {
+        Iterator iterator = exits.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry me2 = (Map.Entry) iterator.next();
+            Exit exit = (Exit) me2.getValue();
+            if (head.equals(exit.getPos())) {
+                System.out.println("ON EST SORTIE: " + me2.getKey());
+                return true;
+            }
+        }
+        return false;
     }
 }

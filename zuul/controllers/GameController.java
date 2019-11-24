@@ -8,69 +8,70 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Duration;
-import zuul.model.*;
-import zuul.model.FastFood;
-import zuul.model.Food;
+import zuul.model.Exit;
+import zuul.model.Item;
 import zuul.model.Game;
-import zuul.model.Snake;
+import zuul.model.MovingPlayer;
 import zuul.views.GameView;
 
+import java.util.HashMap;
+
 public class GameController {
-    private Snake snake;
-    private Food food;
+    private MovingPlayer movingPlayer;
+    private Item item;
     private GameView gameView;
     private Game game;
 
-    public static KeyCode key = KeyCode.LEFT;
-    private boolean started = false;
-
-    private Timer timer;
-    private Thread thread;
-    private double timepoints;
-
-    public GameController(Snake snake, Food food, Game game, GameView gameView) {
-        this.snake = snake;
-        this.food = food;
-        this.gameView = gameView;
-        this.game = game;
-
-        animation.setCycleCount(Animation.INDEFINITE);
-        animation.setRate(game.getSpeed());
-
-        timer = new Timer();
-        thread = new Thread(timer);
+    public HashMap<String, Exit> getExits() {
+        return exits;
     }
 
-    private final Timeline animation = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-        if (!snake.isDead()) {
-            double newTimepoints = timer.getCounter() * game.getTimeWeight() / (game.getWidth() * game.getHeight());
-            newTimepoints = Math.round(newTimepoints * 100.0 / 100.0);
-            if (timepoints != newTimepoints) {
-                timepoints = newTimepoints;
-                game.addPoints(timepoints);
-            }
-            gameView.updateTimerLabel("" + timer.getCounter());
+    private HashMap<String, Exit> exits;
+
+    public static KeyCode key = KeyCode.W;
+    private boolean started = false;
+
+    public GameController(MovingPlayer movingPlayer, Item item, Game game, GameView gameView) {
+        this.movingPlayer = movingPlayer;
+        this.item = item;
+        this.gameView = gameView;
+        this.game = game;
+        this.exits = new HashMap<String, Exit>();
+        exits.put("west", new Exit(0, 10, movingPlayer));
+        exits.put("north", new Exit(10, 0, movingPlayer));
+        exits.put("south", new Exit(10, 20, movingPlayer));
+        exits.put("east", new Exit(20, 10, movingPlayer));
+
+        animation.setCycleCount(Animation.INDEFINITE);
+    }
+
+    private final Timeline animation = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> {
+        if (true) {
+            gameView.updateTimerLabel("YES HOMIE");
 
             if (key.equals(KeyCode.LEFT)) {
-                snake.move('L');
+                movingPlayer.move('L');
+                key = KeyCode.W;
             } else if (key.equals(KeyCode.RIGHT)) {
-                snake.move('R');
+                movingPlayer.move('R');
+                key = KeyCode.W;
             } else if (key.equals(KeyCode.UP)) {
-                snake.move('U');
+                movingPlayer.move('U');
+                key = KeyCode.W;
             } else if (key.equals(KeyCode.DOWN)) {
-                snake.move('D');
+                movingPlayer.move('D');
+                key = KeyCode.W;
             }
 
-            if (snake.ateFood(food)) {
-                game.addPoints();
+            if (movingPlayer.takeItem(item)) {
+                System.out.println("LA ON EST SUR UN ITEM");
+                // Ici juste take l'item, et trouver lequel
                 newFood();
             }
+            if (movingPlayer.goAway(exits)) {
 
-            if (!snake.hitSelf()) {
-                gameView.drawGrid(food, snake, gameView.getGraphicsContext());
             }
-
-            gameView.gameOver(snake);
+            gameView.drawGrid(exits, item, movingPlayer, gameView.getGraphicsContext());
             gameView.updateScoreLabel();
         }
     }));
@@ -79,7 +80,6 @@ public class GameController {
         KeyCode keyCode = event.getCode();
         if (keyCode.isArrowKey() && !started) {
             animation.play();
-            thread.start();
             started = true;
         }
 
@@ -112,28 +112,21 @@ public class GameController {
     }
 
     public void reset() {
-        timer.doStop();
         started = false;
         animation.jumpTo(Duration.ZERO);
         animation.stop();
 
-        snake = new Snake(game.getWidth(), game.getHeight());
-        food = new Food(game.getWidth(), game.getHeight(), snake);
+        movingPlayer = new MovingPlayer(game.getWidth(), game.getHeight());
+        item = new Item(game.getWidth(), game.getHeight(), movingPlayer);
 
-        animation.setRate(game.getSpeed());
         key = KeyCode.LEFT;
-        game.resetScore();
-
-        gameView.gameOver(snake);
         gameView.updateScoreLabel();
 
-        gameView.drawGrid(food, snake, gameView.getGraphicsContext());
+        gameView.drawGrid(exits, item, movingPlayer, gameView.getGraphicsContext());
     }
 
     private void newFood() {
-        int ran = (int) (Math.random() * 5);
-        food = ran > 0 ? new Food(game.getWidth(), game.getHeight(), snake)
-                : new FastFood(game.getWidth(), game.getHeight(), snake);
+        new Item(game.getWidth(), game.getHeight(), movingPlayer);
     }
 
     private static KeyCode key() {

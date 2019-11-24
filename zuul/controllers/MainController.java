@@ -4,23 +4,17 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import zuul.Player;
-import zuul.model.Food;
+import zuul.model.Item;
 import zuul.model.Game;
-import zuul.model.Snake;
+import zuul.model.MovingPlayer;
 import zuul.mygame.MyGame;
 import zuul.room.Room;
 import zuul.views.MenuView;
@@ -135,26 +129,12 @@ public class MainController {
     }
 
     private void initSettingsScene() {
-        /*
-         DANS LES SETTINGS NOM JOUER, MODIFIER LA CARTE, NBR DE JOUEUR (1, 2? 3)
-         MAP DE DEPART CHAMPION
-
-         POUR LANCER LE JEU (my game), passer tout ça en paramètre
-         */
-
-        // ici ajouter les boutons pour supprimer des cartes etc
-        // choisir ou commence le personnage
-
-        // ajouter aussi le nom du Personnage
         settingScene = new Scene(settingsRoot, mainScene.getWidth(), mainScene.getHeight());
         settingView = new SettingView(settingsRoot, primaryStage, mainScene, game);
         settingView.getPlayButton().setOnAction(e -> {
             // ici lancer le jeu avec la carte choisie, avec les bon settings, et le jeu
-            setDifficulty();
             //ICI SET PLAYER ET CHARACTER Et carte :)
-            //setGridSize(inputGridSizeX.getText(), inputGridSizeY.getText());
-            setGridSize("10", "10");
-
+            setGridSize("25", "25");
             initGameStage();
             launchSnake(gameStage);
             gameStage.setScene(gameScene);
@@ -175,19 +155,20 @@ public class MainController {
 
 
     private void launchSnake(Stage gameStage) {
-        Game game = new Game(X_VALUE, Y_VALUE, difficulty);
-        Snake snake = new Snake(game.getWidth(), game.getHeight());
-        Food food = new Food(game.getWidth(), game.getHeight(), snake);
+        Game game = new Game(X_VALUE, Y_VALUE);
+        MovingPlayer movingPlayer = new MovingPlayer(game.getWidth(), game.getHeight());
+        Item item = new Item(game.getWidth(), game.getHeight(), movingPlayer);
 
         GameView gameView = new GameView(game);
-        GameController controller = new GameController(snake, food, game, gameView);
+        GameController controller = new GameController(movingPlayer, item, game, gameView);
 
         StackPane gameRoot = new StackPane();
-        gameScene = new Scene(gameRoot, game.getWidth() * game.getScale() + 200, game.getHeight() * game.getScale());
+
+        gameScene = new Scene(gameRoot, game.getWidth() * 20 + 200, game.getHeight() * 20);
 
         gameScene.setOnKeyPressed(e -> controller.handle(e));
 
-        gameView.makeScene(gameScene, snake, food);
+        gameView.makeScene(controller.getExits(), gameScene, movingPlayer, item);
         HBox layout = new HBox();
         StackPane gameBoard = new StackPane();
         gameBoard.getChildren().addAll(gameView.getGridCanvas(), gameView.getGameOverLabel(), gameView.getUserName());
@@ -229,17 +210,6 @@ public class MainController {
             alert.setContentText("Fields must be numbers between 10 and 100");
             alert.showAndWait();
         }
-    }
-
-    private void setDifficulty() {
-        // Difficulté devient la map choisie
-        /*if (checkEasy.isSelected()) {
-            difficulty = 'E';
-        } else if (checkMedium.isSelected()) {
-            difficulty = 'N';
-        } else if (checkHard.isSelected()) {
-            difficulty = 'H';
-        }*/
     }
 
     public static Stage getPrimaryStage() {

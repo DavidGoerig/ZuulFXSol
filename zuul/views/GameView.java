@@ -8,11 +8,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import java.awt.Point;
 
-import zuul.model.Food;
-import zuul.model.Game;
-import zuul.model.Snake;
+import zuul.model.*;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class GameView {
     private Canvas gridCanvas;
@@ -25,26 +26,25 @@ public class GameView {
 
     private Game game;
     private TextField userName;
+    private final int scale = 20;
 
     public GameView(Game game) {
         this.game = game;
     }
 
-    public void makeScene(Scene scene, Snake snake, Food food) {
+    public void makeScene(HashMap<String, Exit> exits, Scene scene, MovingPlayer movingPlayer, Item item) {
         gridCanvas = new Canvas(scene.getWidth() - 200, scene.getHeight());
         gc = gridCanvas.getGraphicsContext2D();
-        drawGrid(food, snake, gc);
+        drawGrid(exits, item, movingPlayer, gc);
 
         gameOverLabel = new Label("GAME OVER");
         gameOverLabel.setVisible(false);
 
-        scoreLabel = new Label("Score: " + game.getScorePoints());
+        scoreLabel = new Label("Score: " + "Yeah");
         scoreLabel.setFont(new Font("Arial", 20));
 
         timer = new Label("Time: ");
         timer.setFont(new Font("Arial", 20));
-
-        // resetBtn = new Button("Reset");
 
         userName = new TextField("Name");
         userName.setVisible(false);
@@ -52,63 +52,46 @@ public class GameView {
         userName.setMaxWidth(200);
     }
 
-    public void drawGrid(Food food, Snake snake, GraphicsContext gc) {
+    public void drawGrid(HashMap<String, Exit> exits, Item item, MovingPlayer movingPlayer, GraphicsContext gc) {
         gc.setFill(Color.web("#dedede"));
         gc.fillRect(0, 0, gridCanvas.getWidth(), gridCanvas.getHeight());
 
-        drawFood(food);
-        snake.getBody().forEach(point -> drawBody(snake, point));
-        drawHead(snake);
+        drawExits(exits);
+        drawFood(item);
+        drawHead(movingPlayer);
     }
 
-    private void drawFood(Food food) {
-        gc.drawImage(food.getImage(), food.getPos().x * game.getScale(), food.getPos().y * game.getScale(),
-                game.getScale() + 5, game.getScale() + 5);
-
-    }
-
-    private void drawHead(Snake snake) {
-        gc.setFill(Color.web("#276324"));
-        gc.fillRect(snake.getHead().x * game.getScale() + 1.25, snake.getHead().y * game.getScale() + 1.25,
-                game.getScale() - 2.5, game.getScale() - 2.5);
-
-    }
-
-    private void drawBody(Snake snake, Point point) {
-        gc.setFill(Color.web("#62a85f"));
-        gc.fillRect(point.x * game.getScale() + 1.25, point.y * game.getScale() + 1.25, game.getScale() - 2.5,
-                game.getScale() - 2.5);
-    }
-
-    public void gameOver(Snake snake) {
-        if (snake.isDead() && !showGameOver) {
-            showGameOver = true;
-            gameOverLabel.setVisible(true);
-            saveScore();
-        } else if (!snake.isDead() && showGameOver) {
-            gameOverLabel.setVisible(false);
-            showGameOver = false;
+    private void drawExits(HashMap<String, Exit> exits) {
+        Iterator iterator = exits.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry me2 = (Map.Entry) iterator.next();
+            Exit item =  (Exit) me2.getValue();
+            gc.drawImage(item.getImage(), item.getPos().x * scale, item.getPos().y * scale,
+                    scale + 5, scale + 5);
         }
     }
 
+    private void drawFood(Item item) {
+        gc.drawImage(item.getImage(), item.getPos().x * scale, item.getPos().y * scale,
+                scale + 5, scale + 5);
+
+    }
+
+    private void drawHead(MovingPlayer movingPlayer) {
+        gc.setFill(Color.web("#276324"));
+        PlayerImg playerImg = new PlayerImg();
+        gc.drawImage(playerImg.getImage(), movingPlayer.getHead().x * scale, movingPlayer.getHead().y * scale,
+                scale +8, scale +8)
+        ;
+
+    }
+
     public void updateScoreLabel() {
-        scoreLabel.setText("Score: " + game.getScorePoints());
+        scoreLabel.setText("Score: " + "Yes");
     }
 
     public void updateTimerLabel(String time) {
         timer.setText("Time: " + time);
-    }
-
-    public void saveScore() {
-        userName.setVisible(true);
-        userName.setOnAction(ev -> {
-            userName.setVisible(false);
-//            highScore.addScore(userName.getText(), "" + game.getScorePoints());
-        });
-    }
-
-    public void setTimer(String time) {
-        timer.setText(time);
     }
 
     public Canvas getGridCanvas() {

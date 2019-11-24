@@ -134,7 +134,7 @@ public class MainController {
         settingView.getPlayButton().setOnAction(e -> {
             // ici lancer le jeu avec la carte choisie, avec les bon settings, et le jeu
             //ICI SET PLAYER ET CHARACTER Et carte :)
-            setGridSize("25", "25");
+            setGridSize("30", "30");
             initGameStage();
             launchSnake(gameStage);
             gameStage.setScene(gameScene);

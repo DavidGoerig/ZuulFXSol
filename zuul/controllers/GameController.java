@@ -7,6 +7,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import zuul.model.Exit;
 import zuul.model.Item;
@@ -37,10 +38,10 @@ public class GameController {
         this.gameView = gameView;
         this.game = game;
         this.exits = new HashMap<String, Exit>();
-        exits.put("west", new Exit(0, 10, movingPlayer));
-        exits.put("north", new Exit(10, 0, movingPlayer));
-        exits.put("south", new Exit(10, 20, movingPlayer));
-        exits.put("east", new Exit(20, 10, movingPlayer));
+        exits.put("west", new Exit(0, 15, movingPlayer));
+        exits.put("north", new Exit(15, 0, movingPlayer));
+        exits.put("south", new Exit(15, 29, movingPlayer));
+        exits.put("east", new Exit(29, 15, movingPlayer));
 
         animation.setCycleCount(Animation.INDEFINITE);
     }

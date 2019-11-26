@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import zuul.Game;
 import zuul.model.GameBoard;
 import zuul.model.MovingPlayer;
 import zuul.mygame.MyGame;
@@ -167,14 +168,14 @@ public class MainController {
 
         VBox panel = new VBox();
         panel.setBackground(new Background(ViewUtils.createBg()));
-        Label nameLabel = createLabel("Room name: ");
-        Label descLabel = createLabel("Description: ");
-        Label playerNameLabel = createLabel("Name: ");
-        Label playerLabel = createLabel("Player items: ");
-        Label roomItemLabel = createLabel("Item in the room: ");
-        Label roomCharacterLabel = createLabel("Character in the room: ");
-        Label exitsLabel  = createLabel("Available exit: ");
-        panel.getChildren().addAll(playerNameLabel, gameView.getUserName(), nameLabel, gameView.getRoomNameLabel(), descLabel, gameView.getRoomDescLabel(), exitsLabel, controller.getButtonMapBox(), playerLabel, gameView.getvBoxItemPlayer(), roomItemLabel, gameView.getvBoxItemRoom() ,roomCharacterLabel, gameView.getvBoxCharacter());
+        Label nameLabel = createLabel(Game.messages.getString("nameLabel"));
+        Label descLabel = createLabel(Game.messages.getString("descLabel"));
+        Label playerNameLabel = createLabel(Game.messages.getString("playerNameLabel"));
+        Label playerLabel = createLabel(Game.messages.getString("playerLabel"));
+        Label roomItemLabel = createLabel(Game.messages.getString("roomItemLabel"));
+        Label roomCharacterLabel = createLabel(Game.messages.getString("roomCharacterLabel"));
+        Label exitsLabel  = createLabel(Game.messages.getString("exitsLabel"));
+        panel.getChildren().addAll(playerNameLabel, gameView.getUserName(), nameLabel, gameView.getRoomNameLabel(), descLabel,gameView.getRoomDescLabel(), exitsLabel, controller.getButtonMapBox(), playerLabel, gameView.getvBoxItemPlayer(), roomItemLabel, gameView.getvBoxItemRoom() ,roomCharacterLabel, gameView.getvBoxCharacter());
 
 
         panel.setPrefWidth(400);

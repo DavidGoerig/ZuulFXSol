@@ -23,7 +23,7 @@ import java.util.*;
 
 public class SettingView {
     private Button playButton = new Button("Play");
-    private Button backBtn  = new Button(Game.messages.getString("backBtn"));
+    private Button backBtn  = new Button();
     private Button removeNoExitBtn = new Button(Game.messages.getString("removeNoExitBtn"));
     private Button removeAllRoomNoItemBtn = new Button(Game.messages.getString("removeAllRoomNoItemBtn"));
     private Button setPlayerName  = new Button(Game.messages.getString("setPlayerName"));

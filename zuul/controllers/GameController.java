@@ -83,9 +83,9 @@ public class GameController {
         if (itemOn != null) {
             if (!game.getPlayer().take(itemOn)) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("You can't take the item!");
-                alert.setHeaderText("Item too heavy, drop some item before.");
-                alert.setContentText("You can't take the item.");
+                alert.setTitle(Game.messages.getString("alTitle"));
+                alert.setHeaderText(Game.messages.getString("alHeader"));
+                alert.setContentText(Game.messages.getString("alContent"));
                 alert.show();
             }
             items = createItem();
@@ -101,9 +101,9 @@ public class GameController {
             } else {
                 movingPlayer.moveOpposite(dirToMove);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("No exit here sorry!");
-                alert.setHeaderText("Exit not available.");
-                alert.setContentText("No " + dirToMove +" exit");
+                alert.setTitle(Game.messages.getString("aleTitle"));
+                alert.setHeaderText(Game.messages.getString("aleHeader"));
+                alert.setContentText(Game.messages.getString("aleContent1") + dirToMove +" " +Game.messages.getString("aleContent2"));
                 alert.show();
             }
         }

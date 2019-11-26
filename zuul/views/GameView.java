@@ -1,11 +1,8 @@
 package zuul.views;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -15,14 +12,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-import javafx.util.Callback;
 import zuul.Game;
 import zuul.Item;
 import zuul.model.*;
-import zuul.room.Room;
 import zuul.Character;
-
-import java.lang.management.BufferPoolMXBean;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -37,19 +30,19 @@ public class GameView {
 
     private Game game;
     private Label userName;
-    private TableColumn itemDescPlayerCol = new TableColumn(Game.messages.getString("title"));
-    private TableColumn itemWeightPlayerCol = new TableColumn(Game.messages.getString("title"));
-    private TableColumn itemDescRoomCol = new TableColumn(Game.messages.getString("title"));
-    private TableColumn itemWeightRoomCol = new TableColumn(Game.messages.getString("title"));
-    private TableColumn charNameCol = new TableColumn(Game.messages.getString("title"));
+    private TableColumn itemDescPlayerCol = new TableColumn(Game.messages.getString("itemDescPlayerCol"));
+    private TableColumn itemWeightPlayerCol = new TableColumn(Game.messages.getString("itemWeightPlayerCol"));
+    private TableColumn itemDescRoomCol = new TableColumn(Game.messages.getString("itemDescRoomCol"));
+    private TableColumn itemWeightRoomCol = new TableColumn(Game.messages.getString("itemWeightRoomCol"));
+    private TableColumn charNameCol = new TableColumn(Game.messages.getString("charNameCol"));
 
     private TableView<Item> tableItemPlayer = new TableView<Item>();
     private TableView<Item> tableItemRoom = new TableView<Item>();
     private TableView<Character> tableCharacters = new TableView<Character>();
 
-    private Button dropButton = new Button("Drop selection");
-    private Button takeButton = new Button("Take selection");
-    private Button giveButton = new Button("Give selected item to selected character");
+    private Button dropButton = new Button(Game.messages.getString("dropButton"));
+    private Button takeButton = new Button(Game.messages.getString("takeButton"));
+    private Button giveButton = new Button(Game.messages.getString("giveButton"));
 
     private final ObservableList<Item> dataItemPlayer = FXCollections.observableArrayList();
     private final ObservableList<Item> dataItemRoom = FXCollections.observableArrayList();
@@ -128,9 +121,9 @@ public class GameView {
             Item ra = tableItemPlayer.getSelectionModel().getSelectedItem();
             if (r != null && ra != null) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("You jus gave your " + ra.getDescription() +" to " + r.getName());
-                alert.setHeaderText("You jus gave your " + ra.getDescription() +" to " + r.getName());
-                alert.setContentText("You jus gave your " + ra.getDescription() +" to " + r.getName());
+                alert.setTitle(Game.messages.getString("gave") + ra.getDescription() +" "+Game.messages.getString("to") + r.getName());
+                alert.setHeaderText(Game.messages.getString("gave") + ra.getDescription() +" "+Game.messages.getString("to") + r.getName());
+                alert.setContentText(Game.messages.getString("gave") + ra.getDescription() +" "+Game.messages.getString("to") + r.getName());
                 alert.showAndWait();
                 game.getPlayer().give(ra.getDescription(), r.getName());
                 updateDatas();
@@ -156,9 +149,9 @@ public class GameView {
             if (r != null) {
                 if (!game.getPlayer().take(r.getDescription())) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("You can't take the item!");
-                    alert.setHeaderText("Item too heavy, drop some item before.");
-                    alert.setContentText("You can't take the item.");
+                    alert.setTitle(Game.messages.getString("alertTitleA"));
+                    alert.setHeaderText(Game.messages.getString("alertHeader"));
+                    alert.setContentText(Game.messages.getString("alertContent"));
                     alert.showAndWait();
                 }
                 updateDatas();

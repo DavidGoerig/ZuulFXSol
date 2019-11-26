@@ -14,3 +14,5 @@
 Pour la game on a fait un schema MVC (model, vue, controller) -> screen des dossiers
 
 8. dire que ce qu'on a ajouté au jeu -> modifier les pièces en direct (supprimer room, ajouter objet, permettre de choisir map de départ, etc.)
+
+Permet de voir la map charger dans l'input de carte, changer et s'update dans les settings.

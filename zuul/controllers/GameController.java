@@ -54,6 +54,7 @@ public class GameController {
         this.exits = new HashMap<String, Exit>();
         items = createItem();
         characters = createCharacters();
+        gameView.createTables();
         exits.put("west", new Exit(0, 15, "west"));
         exits.put("north", new Exit(15, 0, "north"));
         exits.put("south", new Exit(15, 29, "south"));
@@ -80,8 +81,15 @@ public class GameController {
     private void checkItem() {
         String itemOn = movingPlayer.takeItem(items);
         if (itemOn != null) {
-            game.getPlayer().take(itemOn);
+            if (!game.getPlayer().take(itemOn)) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("You can't take the item!");
+                alert.setHeaderText("Item too heavy, drop some item before.");
+                alert.setContentText("You can't take the item.");
+                alert.show();
+            }
             items = createItem();
+            gameView.updateDatas();
         }
     }
 
@@ -107,8 +115,17 @@ public class GameController {
         checkExit();
         gameView.drawGrid(items, exits, movingPlayer, gameView.getGraphicsContext(), characters);
         updateLabel();
+        checkGameViewGridUpdate();
         gameView.getGridCanvas().requestFocus();
     }));
+
+    private void checkGameViewGridUpdate() {
+        if (gameView.isUpdateinGameView()) {
+            items = createItem();
+            updateLabel();
+            gameView.setUpdateinGameView(false);
+        }
+    }
 
     private void updateLabel() {
         gameView.updateRoomNameLabel(game.getPlayer().getCurrentRoom().getName());
@@ -151,6 +168,7 @@ public class GameController {
         animation.jumpTo(Duration.ZERO);
         animation.stop();
 
+        gameView.updateDatas();
         movingPlayer = new MovingPlayer(gameBoard.getWidth(), gameBoard.getHeight());
         items = createItem();
         characters = createCharacters();
@@ -172,6 +190,7 @@ public class GameController {
                 b.setOnAction(e -> {
                     game.getPlayer().goRoom(s);
                     reset();
+                    gameView.updateDatas();
                 });
                 buttonMapBox.getChildren().addAll(b);
             }
@@ -180,9 +199,9 @@ public class GameController {
 
     private List<CharacterDraw> createCharacters() {
         List<CharacterDraw> al = new ArrayList<>();
-        Map<String, Character> allChar = game.getPlayer().getCurrentRoom().getCharacters();
-        Iterator iterator = allChar.entrySet().iterator();
-        while (iterator.hasNext()) {
+        Map<String, Character> allChar = new HashMap<>(game.getPlayer().getCurrentRoom().getCharacters());
+
+        for (Object value : allChar.values()) {
             al.add(new CharacterDraw(gameBoard.getWidth(), gameBoard.getHeight()));
         }
         return al;

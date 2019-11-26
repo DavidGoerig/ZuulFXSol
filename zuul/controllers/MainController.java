@@ -3,17 +3,12 @@ package zuul.controllers;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import zuul.Item;
-import zuul.model.ItemDraw;
 import zuul.model.GameBoard;
 import zuul.model.MovingPlayer;
 import zuul.mygame.MyGame;
@@ -21,7 +16,6 @@ import zuul.room.Room;
 import zuul.views.*;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 public class MainController {
@@ -57,6 +51,9 @@ public class MainController {
     private Scene sceneSetMapView;
     private Scene settingScene;
     private MenuView menuView;
+    private GameView gameView;
+
+    // TABS SHT
 
     public MainController() throws IOException {
         initGameController();
@@ -130,11 +127,9 @@ public class MainController {
         settingScene = new Scene(settingsRoot, mainScene.getWidth(), mainScene.getHeight());
         settingView = new SettingView(settingsRoot, primaryStage, mainScene, game);
         settingView.getPlayButton().setOnAction(e -> {
-            // ici lancer le jeu avec la carte choisie, avec les bon settings, et le jeu
-            //ICI SET PLAYER ET CHARACTER Et carte :)
             setGridSize(30, 30);
             initGameStage();
-            launchGame(gameStage);
+            launchGame();
             gameStage.setScene(gameScene);
             primaryStage.close();
             gameStage.show();
@@ -152,10 +147,10 @@ public class MainController {
 
 
 
-    private void launchGame(Stage gameStage) {
+    private void launchGame() {
         GameBoard gameBoardDef = new GameBoard(X_VALUE, Y_VALUE);
         MovingPlayer movingPlayer = new MovingPlayer(gameBoardDef.getWidth(), gameBoardDef.getHeight());
-        GameView gameView = new GameView(game);
+        gameView = new GameView(game);
         GameController controller = new GameController(movingPlayer, gameBoardDef, gameView, game);
 
         StackPane gameRoot = new StackPane();
@@ -179,8 +174,8 @@ public class MainController {
         Label roomItemLabel = createLabel("Item in the room: ");
         Label roomCharacterLabel = createLabel("Character in the room: ");
         Label exitsLabel  = createLabel("Available exit: ");
-        panel.getChildren().addAll(playerNameLabel, gameView.getUserName(), nameLabel, gameView.getRoomNameLabel(), descLabel, gameView.getRoomDescLabel(), exitsLabel, controller.getButtonMapBox(), playerLabel, roomItemLabel, roomCharacterLabel);
-        //panel.setAlignment(Pos.CENTER);
+        panel.getChildren().addAll(playerNameLabel, gameView.getUserName(), nameLabel, gameView.getRoomNameLabel(), descLabel, gameView.getRoomDescLabel(), exitsLabel, controller.getButtonMapBox(), playerLabel, gameView.getvBoxItemPlayer(), roomItemLabel, gameView.getvBoxItemRoom() ,roomCharacterLabel, gameView.getvBoxCharacter());
+
 
         panel.setPrefWidth(400);
         panel.setPadding(new Insets(10));

@@ -15,7 +15,11 @@ import java.util.HashMap;
 public class Player {
     private String name;
     private Room currentRoom;
-    
+
+    public Map<String, Item> getItems() {
+        return items;
+    }
+
     /** A map of items the player has */
     final private Map<String, Item> items;
     /** the total weight of these items */
@@ -75,22 +79,23 @@ public class Player {
      * Take an item from a room. Check whether it is in the room and it is not too heavy
      * @param desc the name of the item
      */
-    public void take(String desc) {
+    public boolean take(String desc) {
         if (!getCurrentRoom().containsItem(desc)) {
             // The item is not in the room
             Game.out.println(desc + " " + Game.messages.getString("zuul/room")); // is not in the room"
-            return;
+            return false;
         }
         Item item = getCurrentRoom().getItem(desc);
         if (tooHeavy(item)) {
             // The player is carrying too much
             Game.out.println(desc + " " + Game.messages.getString("heavy")); // is too heavy
-            return;
+            return false;
         }
 
         item = getCurrentRoom().removeItem(desc);
         items.put(desc, item);
         totalWeight += item.getWeight();
+        return true;
     }
 
     /**

@@ -56,7 +56,6 @@ public class MovingPlayer {
                 return itemOn.getDescription();
             }
         }
-        // TROUVER QUEL ITEM C, le take
         return null;
     }
 

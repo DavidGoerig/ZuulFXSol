@@ -1,13 +1,18 @@
-1. ajouter les rooms (nom, desc, connexion) + 1 bouton pour delete la room + add obj
+1. ajouter pour mes items un tableau + 1 bouton "Drop selected item"
 
-2. ajouter les character (bouton + input) pour add + liste des character
+2. ajjouter pour les items de la room un tableau + 1 bouton "Take selected item"
 
-3. faire de settingview un moins gros bordel
+3. ajouter un bouton pour les character dans la room + 1 bouton "give selected item"
 
-4. implémenter le jeu
+4. Jeu est fini. Cependant encore un peu d'effort: rendre le code plus joli?... + DANS LE JEU AJOUTER TOUSSSS LES TEXTES EN FR ISSOU + delete les in / out tout ca
 
-5. Javadoc
+5. Javadoc (lol)
 
-6. vidéo
+6. vidéo OUI
 
-7. report
+7. report (dire que pour la map tout est fait en stream, pour aider les mecs à rajouter ce qu'ils veulent comme fonction on a fais des behaviour parametisation (screen des filter la))
+Pour la game on a fait un schema MVC (model, vue, controller) -> screen des dossiers
+
+8. dire que ce qu'on a ajouté au jeu -> modifier les pièces en direct (supprimer room, ajouter objet, permettre de choisir map de départ, etc.)
+
+Permet de voir la map charger dans l'input de carte, changer et s'update dans les settings.

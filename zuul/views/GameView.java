@@ -36,6 +36,13 @@ public class GameView {
     private TableColumn itemWeightRoomCol = new TableColumn(Game.messages.getString("itemWeightRoomCol"));
     private TableColumn charNameCol = new TableColumn(Game.messages.getString("charNameCol"));
 
+    private Label nameLabel = createLabel(Game.messages.getString("nameLabel"));
+    private Label descLabel = createLabel(Game.messages.getString("descLabel"));
+    private Label playerNameLabel = createLabel(Game.messages.getString("playerNameLabel"));
+    private Label playerLabel = createLabel(Game.messages.getString("playerLabel"));
+    private Label roomItemLabel = createLabel(Game.messages.getString("roomItemLabel"));
+    private Label roomCharacterLabel = createLabel(Game.messages.getString("roomCharacterLabel"));
+    private Label exitsLabel  = createLabel(Game.messages.getString("exitsLabel"));
     private TableView<Item> tableItemPlayer = new TableView<Item>();
     private TableView<Item> tableItemRoom = new TableView<Item>();
     private TableView<Character> tableCharacters = new TableView<Character>();
@@ -50,6 +57,9 @@ public class GameView {
 
     private VBox vBoxItemPlayer = new VBox();
     private VBox vBoxItemRoom = new VBox();
+    private final int scale = 20;
+    private boolean updateinGameView = false;
+    private VBox vBoxCharacter = new VBox();
 
     public boolean isUpdateinGameView() {
         return updateinGameView;
@@ -59,7 +69,6 @@ public class GameView {
         this.updateinGameView = updateinGameView;
     }
 
-    private boolean updateinGameView = false;
 
     public VBox getvBoxItemPlayer() {
         return vBoxItemPlayer;
@@ -69,7 +78,6 @@ public class GameView {
         return vBoxCharacter;
     }
 
-    private VBox vBoxCharacter = new VBox();
 
     public void createTables() {
         updateDatas();
@@ -78,8 +86,15 @@ public class GameView {
         vBoxCharacter = createCharacterTable();
     }
 
-    private final int scale = 20;
 
+
+    private Label createLabel(String descRoom) {
+        Label label = new Label(descRoom);
+        label.setFont(new Font("Verdana", 20));
+        label.setStyle("-fx-font-weight: bold;");
+        label.setTextFill(Color.WHITE);
+        return label;
+    }
 
     public GameView(Game game) {
         this.game = game;
@@ -283,5 +298,33 @@ public class GameView {
 
     public VBox getvBoxItemRoom() {
         return vBoxItemRoom;
+    }
+
+    public Label getDescLabel() {
+        return descLabel;
+    }
+
+    public Label getNameLabel() {
+        return nameLabel;
+    }
+
+    public Label getPlayerNameLabel() {
+        return playerNameLabel;
+    }
+
+    public Label getPlayerLabel() {
+        return playerLabel;
+    }
+
+    public Label getRoomItemLabel() {
+        return roomItemLabel;
+    }
+
+    public Label getRoomCharacterLabel() {
+        return roomCharacterLabel;
+    }
+
+    public Label getExitsLabel() {
+        return exitsLabel;
     }
 }

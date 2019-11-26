@@ -168,14 +168,7 @@ public class MainController {
 
         VBox panel = new VBox();
         panel.setBackground(new Background(ViewUtils.createBg()));
-        Label nameLabel = createLabel(Game.messages.getString("nameLabel"));
-        Label descLabel = createLabel(Game.messages.getString("descLabel"));
-        Label playerNameLabel = createLabel(Game.messages.getString("playerNameLabel"));
-        Label playerLabel = createLabel(Game.messages.getString("playerLabel"));
-        Label roomItemLabel = createLabel(Game.messages.getString("roomItemLabel"));
-        Label roomCharacterLabel = createLabel(Game.messages.getString("roomCharacterLabel"));
-        Label exitsLabel  = createLabel(Game.messages.getString("exitsLabel"));
-        panel.getChildren().addAll(playerNameLabel, gameView.getUserName(), nameLabel, gameView.getRoomNameLabel(), descLabel,gameView.getRoomDescLabel(), exitsLabel, controller.getButtonMapBox(), playerLabel, gameView.getvBoxItemPlayer(), roomItemLabel, gameView.getvBoxItemRoom() ,roomCharacterLabel, gameView.getvBoxCharacter());
+        panel.getChildren().addAll(gameView.getPlayerNameLabel(), gameView.getUserName(), gameView.getNameLabel(), gameView.getRoomNameLabel(), gameView.getDescLabel(),gameView.getRoomDescLabel(), gameView.getExitsLabel(), controller.getButtonMapBox(), gameView.getPlayerLabel(), gameView.getvBoxItemPlayer(), gameView.getRoomItemLabel(), gameView.getvBoxItemRoom() ,gameView.getRoomCharacterLabel(), gameView.getvBoxCharacter());
 
 
         panel.setPrefWidth(400);
@@ -189,14 +182,6 @@ public class MainController {
         controller.updateButtonMapChanging();
         gameView.getGridCanvas().requestFocus();
 
-    }
-
-    private Label createLabel(String descRoom) {
-        Label label = new Label(descRoom);
-        label.setFont(new Font("Verdana", 20));
-        label.setStyle("-fx-font-weight: bold;");
-        label.setTextFill(Color.WHITE);
-        return label;
     }
 
     public void initGameStage() {

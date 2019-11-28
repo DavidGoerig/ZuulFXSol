@@ -10,6 +10,11 @@ public class Exit {
     private Point pos = new Point();
     private Image image;
 
+    /**
+     * Class for drawing exits
+     * @param gridx x
+     * @param gridy y
+     */
     public Exit(int gridx, int gridy, String dir) {
         HashMap<String, String> paths = new HashMap<>();
         paths.put("north", "zuul/views/res/arrow_up.png");
@@ -19,10 +24,18 @@ public class Exit {
         this.image = new Image(paths.get(dir));
         pos.setLocation(gridx, gridy);
     }
+    /**
+     * get pos
+     * @return pos
+     */
     public Point getPos() {
         return new Point(pos);
     }
 
+    /**
+     * get image
+     * @return image
+     */
     public Image getImage() {
         return image;
     }

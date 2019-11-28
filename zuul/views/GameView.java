@@ -61,24 +61,41 @@ public class GameView {
     private boolean updateinGameView = false;
     private VBox vBoxCharacter = new VBox();
 
+    /**
+     * check if we need to update game view
+     * @return bool
+     */
     public boolean isUpdateinGameView() {
         return updateinGameView;
     }
 
+    /**
+     * set update boolean (MVC)
+     * @param updateinGameView bool
+     */
     public void setUpdateinGameView(boolean updateinGameView) {
         this.updateinGameView = updateinGameView;
     }
 
-
+    /**
+     * get VBOX with item tab
+     * @return
+     */
     public VBox getvBoxItemPlayer() {
         return vBoxItemPlayer;
     }
 
+    /**
+     * get vbox with character tab
+     * @return char
+     */
     public VBox getvBoxCharacter() {
         return vBoxCharacter;
     }
 
-
+    /**
+     * create all tabls
+     */
     public void createTables() {
         updateDatas();
         vBoxItemPlayer = createItemPlayerTable();
@@ -87,7 +104,11 @@ public class GameView {
     }
 
 
-
+    /**
+     * create all labels
+     * @param descRoom room
+     * @return labels
+     */
     private Label createLabel(String descRoom) {
         Label label = new Label(descRoom);
         label.setFont(new Font("Verdana", 20));
@@ -96,10 +117,17 @@ public class GameView {
         return label;
     }
 
+    /**
+     *
+     * @param game
+     */
     public GameView(Game game) {
         this.game = game;
     }
 
+    /**
+     * updates all the data in the tab
+     */
     public void updateDatas() {
         dataItemPlayer.clear();
         dataItemRoom.clear();
@@ -127,7 +155,11 @@ public class GameView {
         }
     }
 
-    public VBox createCharacterTable() {
+    /**
+     * create char tab
+     * @return vnox containing it
+     */
+    private VBox createCharacterTable() {
         tableCharacters.setEditable(true);
         charNameCol.setMinWidth(100);
         charNameCol.setCellValueFactory(new PropertyValueFactory<Character, String>("name"));
@@ -153,7 +185,11 @@ public class GameView {
         return vbox;
     }
 
-    public VBox createItemRoomTable() {
+    /**
+     * create item tab
+     * @return vbox containing it
+     */
+    private VBox createItemRoomTable() {
         tableItemRoom.setEditable(true);
         itemDescRoomCol.setMinWidth(100);
         itemDescRoomCol.setCellValueFactory(new PropertyValueFactory<Item, String>("description"));
@@ -177,6 +213,15 @@ public class GameView {
 
     }
 
+    /**
+     * vbox
+     * @param table
+     * @param list
+     * @param tableColumn
+     * @param tableColumn1
+     * @param button
+     * @return
+     */
     private VBox getvBox(TableView<Item> table, ObservableList<Item> list, TableColumn tableColumn, TableColumn tableColumn1, Button button) {
         table.setItems(list);
         table.getColumns().addAll(tableColumn, tableColumn1);
@@ -187,6 +232,10 @@ public class GameView {
         return vbox;
     }
 
+    /**
+     * create item player table
+     * @return vbox
+     */
     public VBox createItemPlayerTable() {
         tableItemPlayer.setEditable(true);
         itemDescPlayerCol.setMinWidth(100);
@@ -204,6 +253,14 @@ public class GameView {
         return getvBox(tableItemPlayer, dataItemPlayer, itemDescPlayerCol, itemWeightPlayerCol, dropButton);
     }
 
+    /**
+     * make scene
+     * @param exits
+     * @param scene
+     * @param movingPlayer
+     * @param items
+     * @param characters
+     */
     public void makeScene(HashMap<String, Exit> exits, Scene scene, MovingPlayer movingPlayer, HashMap<Item, ItemDraw> items, List<CharacterDraw> characters) {
         gridCanvas = new Canvas(scene.getWidth() - 400, scene.getHeight());
         gc = gridCanvas.getGraphicsContext2D();
@@ -214,6 +271,11 @@ public class GameView {
         userName = labelCreator(game.getPlayer().getName());
     }
 
+    /**
+     * create labels
+     * @param txt txt
+     * @return label
+     */
     private Label labelCreator(String txt) {
         Label label = new Label(txt);
         label.setFont(new Font("Verdana", 15));
@@ -221,16 +283,28 @@ public class GameView {
         return label;
     }
 
+    /**
+     * draw the grid
+     * @param items
+     * @param exits
+     * @param movingPlayer
+     * @param gc
+     * @param characters
+     */
     public void drawGrid(HashMap<Item, ItemDraw> items, HashMap<String, Exit> exits, MovingPlayer movingPlayer, GraphicsContext gc, List<CharacterDraw> characters) {
         gc.setFill(Color.web("#dedede"));
         gc.fillRect(0, 0, gridCanvas.getWidth(), gridCanvas.getHeight());
 
         drawExits(exits);
         drawItems(items);
-        drawHead(movingPlayer);
+        drawPlayer(movingPlayer);
         drawCharacters(characters);
     }
 
+    /**
+     * draw characters
+     * @param characters
+     */
     private void drawCharacters(List<CharacterDraw> characters) {
         for (CharacterDraw i : characters) {
             gc.drawImage(i.getImage(), i.getPos().x * scale, i.getPos().y * scale,
@@ -239,6 +313,10 @@ public class GameView {
 
     }
 
+    /**
+     * draw exits
+     * @param exits
+     */
     private void drawExits(HashMap<String, Exit> exits) {
         Iterator iterator = exits.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -249,6 +327,10 @@ public class GameView {
         }
     }
 
+    /**
+     *
+     * @param items
+     */
     private void drawItems(HashMap <Item, ItemDraw> items) {
         Iterator iterator = items.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -259,71 +341,135 @@ public class GameView {
         }
     }
 
-    private void drawHead(MovingPlayer movingPlayer) {
+    /**
+     * draw player
+     * @param movingPlayer
+     */
+    private void drawPlayer(MovingPlayer movingPlayer) {
         gc.setFill(Color.web("#276324"));
         PlayerImg playerImg = new PlayerImg();
-        gc.drawImage(playerImg.getImage(), movingPlayer.getHead().x * scale, movingPlayer.getHead().y * scale,
+        gc.drawImage(playerImg.getImage(), movingPlayer.getCharPos().x * scale, movingPlayer.getCharPos().y * scale,
                 scale +8, scale +8)
         ;
 
     }
 
+    /**
+     * update room name label
+     * @param name
+     */
     public void updateRoomNameLabel(String name) {
         roomNameLabel.setText(name);
     }
 
+    /**
+     * set text desc label
+     * @param desc
+     */
     public void roomDescLabel(String desc) {
         roomDescLabel.setText(desc);
     }
 
+    /**
+     * get canvas grid
+     * @return
+     */
     public Canvas getGridCanvas() {
         return gridCanvas;
     }
 
+    /**
+     * graphic context
+     * @return
+     */
     public GraphicsContext getGraphicsContext() {
         return gc;
     }
 
+    /**
+     * get room label name
+     * @return
+     */
     public Label getRoomNameLabel() {
         return roomNameLabel;
     }
 
+    /**
+     * getter
+     * @return
+     */
     public Label getRoomDescLabel() {
         return roomDescLabel;
     }
 
+    /**
+     *getter
+     * @return
+     */
     public Label getUserName() {
         return userName;
     }
 
+    /**
+     *getter
+     * @return
+     */
     public VBox getvBoxItemRoom() {
         return vBoxItemRoom;
     }
 
+    /**
+     *getter
+     * @return
+     */
     public Label getDescLabel() {
         return descLabel;
     }
 
+    /**
+     *getter
+     * @return
+     */
     public Label getNameLabel() {
         return nameLabel;
     }
 
+    /**
+     *getter
+     * @return
+     */
     public Label getPlayerNameLabel() {
         return playerNameLabel;
     }
 
+    /**
+     *getter
+     * @return
+     */
     public Label getPlayerLabel() {
         return playerLabel;
     }
 
+    /**
+     *getter
+     * @return
+     */
     public Label getRoomItemLabel() {
         return roomItemLabel;
     }
 
+    /**
+     *getter
+     * @return
+     */
     public Label getRoomCharacterLabel() {
         return roomCharacterLabel;
     }
 
+    /**
+     *getter
+     * @return
+     */
     public Label getExitsLabel() {
         return exitsLabel;
     }

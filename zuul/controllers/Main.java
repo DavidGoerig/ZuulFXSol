@@ -10,6 +10,11 @@ public class Main extends Application {
         launch(args);
     }
 
+    /**
+     * starting main function
+     * @param primaryStage
+     * @throws IOException
+     */
     @Override
     public void start(Stage primaryStage) throws IOException {
         new MainController();

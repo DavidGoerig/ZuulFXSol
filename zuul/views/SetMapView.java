@@ -1,13 +1,11 @@
 package zuul.views;
 
-import com.sun.glass.ui.View;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -18,11 +16,8 @@ import javafx.stage.FileChooser;
 import zuul.Game;
 import zuul.controllers.MainController;
 import zuul.roomcsv.RoomCsvChecker;
-import zuul.roomcsv.*;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 public class SetMapView {
   private File importedFile = new File("zuul/res/config_file/game1.csv");
@@ -34,6 +29,10 @@ public class SetMapView {
   private Button buttonChooseMap;
   private Button backBtn;
 
+  /**
+   * file handler (get the file from user input)
+   * @throws IOException
+   */
   private void fileHandler() throws IOException {
     RoomCsvChecker check = new RoomCsvChecker();
     FileChooser fileChooser = new FileChooser();
@@ -55,6 +54,12 @@ public class SetMapView {
     }
   }
 
+  /**
+   * file to string to parse it
+   * @param file
+   * @return
+   * @throws IOException
+   */
   private String fileToString(File file) throws IOException {
     BufferedReader br = new BufferedReader(new FileReader(file));
 
@@ -66,6 +71,10 @@ public class SetMapView {
     return fnl;
   }
 
+  /**
+   * set text error
+   * @return
+   */
   private Text errorText() {
     Text title = new Text();
     title.setText("");
@@ -74,6 +83,12 @@ public class SetMapView {
     return title;
   }
 
+  /**
+   * file to text to display it
+   * @param file
+   * @return
+   * @throws IOException
+   */
   private Text fileToText(File file) throws IOException {
     String fnl = fileToString(file);
     Text title = new Text();
@@ -82,8 +97,6 @@ public class SetMapView {
     title.setFont(Font.font("Verdana", 14));
     return title;
   }
-
-
 
 
   public SetMapView(ScrollPane sp, Pane root) throws IOException {
@@ -140,14 +153,17 @@ public class SetMapView {
     root.getChildren().addAll(vbox);
   }
 
+  /**
+   * get imported file
+   * @return
+   */
   public File getImportedFile() {
     return importedFile;
   }
 
-  public void setImportedFile(File importedFile) {
-    this.importedFile = importedFile;
-  }
-
+  /**
+   * update button text dipsplay
+   */
   public void updateButtonTextDisplay() {
     title.setText(Game.messages.getString("titleMapView"));
     rule.setText(Game.messages.getString("rule"));

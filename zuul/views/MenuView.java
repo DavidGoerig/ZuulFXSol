@@ -25,11 +25,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import zuul.Game;
 
@@ -97,26 +94,49 @@ public class MenuView {
     rootPane.getChildren().addAll(vbox);
   }
 
-  public Button btnStart() {
+  /**
+   * get btn start
+   * @return button start obj
+   */
+  public Button getBtnStart() {
     return btnStart;
   }
 
+  /**
+   * get button to got to set map
+   * @return button
+   */
   public Button getBtnSetMap() {
     return btnSetMap;
   }
 
-  public Button btnExit() {
+  /**
+   * get button to exit
+   * @return button
+   */
+  public Button getBtnExit() {
     return btnExit;
   }
 
+  /**
+   * get button fr
+   * @return button
+   */
   public Button getBtnFr() {
     return btnFr;
   }
 
+  /**
+   * get button en
+   * @return button
+   */
   public Button getBtnEn() {
     return btnEn;
   }
 
+  /**
+   * update all buttons text
+   */
   public void updateButtonTextDisplay() {
     btnStart.setText(Game.messages.getString("btnStart"));
     btnSetMap.setText(Game.messages.getString("btnSetMap"));

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.*;
 
 import zuul.room.Room;
-import zuul.command.CommandWords;
 import zuul.roomcsv.RoomCsvUploader;
 
 /**
@@ -36,15 +35,13 @@ public abstract class Game {
      * Internationalisation messages
      */
     public static ResourceBundle messages;
-    
-    /**
-     * The commands known to the game
-     */
-
-    public static CommandWords commands;
 
     private Player player;
 
+    /**
+     * get for rooms
+     * @return all rooms
+     */
     public HashMap<String, Room> getAllRooms() {
         return allRooms;
     }
@@ -56,16 +53,19 @@ public abstract class Game {
      *
      * @param language The language to use
      * @param country The country
-     * @param commands The available command words
      * @see java.util.Locale
      */
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public Game(String language, String country, CommandWords commands) throws IOException {
+    public Game(String language, String country) throws IOException {
         Locale currentLocale = new Locale(language, country);
         messages = ResourceBundle.getBundle("zuul.mygame.MessagesBundle", currentLocale);
-        Game.commands = commands;
     }
 
+    /**
+     * Set bundle to chosen one using language and country
+     * @param language chosen language for bundle
+     * @param country chosen country for bundle
+     */
     public void setBundle(String language, String country) {
         Locale currentLocale = new Locale(language, country);
         messages = ResourceBundle.getBundle("zuul.mygame.MessagesBundle", currentLocale);
@@ -103,9 +103,23 @@ public abstract class Game {
      */
     protected abstract void createRooms(File file) throws IOException;
 
+
+    /**
+     * method to create player
+     * @param playerName player name
+     */
     public abstract void createPlayer(String playerName);
 
+    /**
+     * method for create character
+     * @param name character name
+     * @param r chosen room
+     */
     public abstract void createCharacter(String name, Room r);
 
+    /**
+     * method for delete a room
+     * @param r chosen room
+     */
     public abstract void deleteRoom(Room r);
 }

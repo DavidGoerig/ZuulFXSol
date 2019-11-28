@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -14,12 +13,23 @@ import java.util.stream.Stream;
 
 public class RoomCsvUploader {
 
+    /**
+     * load csv into stream supplioer
+     * @param pathCsvFile csv path string
+     * @return supplier
+     * @throws IOException
+     */
     private Supplier<Stream<String>> loadCsvIntoStream(Path pathCsvFile) throws IOException {
        // reading csv file into stream, try-with-resources
         List<String> allLines = Files.readAllLines(pathCsvFile);
         return allLines::stream;
     }
 
+    /**
+     * create rooms from csv
+     * @param supplier supp
+     * @return Hasmap with rooms as value and name as key
+     */
     private HashMap<String, Room> createRooms(Supplier<Stream<String>> supplier) {
         HashMap<String, Room> roomList = new HashMap<>();
         List<Pair> list = supplier.get().map(line -> {
@@ -32,6 +42,12 @@ public class RoomCsvUploader {
         return roomList;
     }
 
+    /**
+     * create room from csv
+     * @param csvFile csv
+     * @return hashmap
+     * @throws IOException
+     */
     public HashMap<String, Room> createRoomsFromCsv(File csvFile) throws IOException {
         HashMap<String, Room> allRooms;
         Supplier<Stream<String>> supplierStreamCsv = loadCsvIntoStream(csvFile.toPath());
@@ -41,6 +57,11 @@ public class RoomCsvUploader {
         return allRooms;
     }
 
+    /**
+     * add object to rooms
+     * @param supplier supp
+     * @param allRooms all rooms
+     */
     private void addObjects(Supplier<Stream<String>> supplier, HashMap<String, Room> allRooms) {
         List<String[]> list = supplier.get()
                 .filter(line -> line.split(",").length > 6)
@@ -61,6 +82,11 @@ public class RoomCsvUploader {
         });
     }
 
+    /**
+     * initialise exits
+     * @param supplier supp
+     * @param allRooms all rooms
+     */
     void initialiseExits(Supplier<Stream<String>> supplier, HashMap<String, Room> allRooms) {
         List<String[]> list = supplier.get().map(line -> {
             String[] str = line.split(",");

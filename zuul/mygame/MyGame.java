@@ -12,7 +12,7 @@ import zuul.Character;
 public class MyGame extends Game {
 
     public MyGame(String language, String country) throws IOException {
-	super(language, country, new zuul.mygame.CommandWords());
+	super(language, country);
     }
 	
     /** Create all the rooms and link their exits together.  */
@@ -21,6 +21,10 @@ public class MyGame extends Game {
         allRooms = roomCsvUploader.createRoomsFromCsv(csvFile);
     }
 
+    /**
+     * create players
+     * @param playerName player name
+     */
     @Override
     public void createPlayer(String playerName) {
         Map.Entry<String, Room> entry = allRooms.entrySet().iterator().next();
@@ -28,6 +32,11 @@ public class MyGame extends Game {
         setPlayer(new Player(playerName, randomRoom));
     }
 
+    /**
+     * create char
+     * @param name character name
+     * @param r chosen room
+     */
     @Override
     public void createCharacter(String name, Room r) {
         // add a character
@@ -41,6 +50,10 @@ public class MyGame extends Game {
         });
     }
 
+    /**
+     * delete room
+     * @param r chosen room
+     */
     @Override
     public void deleteRoom(Room r) {
         Iterator iterator = allRooms.entrySet().iterator();

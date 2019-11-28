@@ -127,12 +127,6 @@ public class Player {
     }
 
     /**
-     * Look around the current room, giving the user some info
-     */
-    public void look() {
-    }
-
-    /**
      * Go to another room
      * @param direction the name of the door to use - check the door exists
      */
@@ -143,7 +137,6 @@ public class Player {
             return false;
         } else {
             setCurrentRoom(nextRoom);
-            look();
         }
         return true;
     }

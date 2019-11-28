@@ -1,5 +1,4 @@
 package zuul.controllers;
-
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -20,30 +19,18 @@ import zuul.views.GameView;
 
 import java.util.*;
 
+/**
+ *  Game controller
+ */
 public class GameController {
     private MovingPlayer movingPlayer;
-
-    public HBox getButtonMapBox() {
-        return buttonMapBox;
-    }
-
     private HBox buttonMapBox = new HBox();
-    public HashMap<Item, ItemDraw> getItems() {
-        return items;
-    }
-
     private HashMap <Item, ItemDraw> items;
     private GameView gameView;
     private GameBoard gameBoard;
     private Game game;
     private List<CharacterDraw> characters = new ArrayList<>();
-
-    public HashMap<String, Exit> getExits() {
-        return exits;
-    }
-
     private HashMap<String, Exit> exits;
-
     private static KeyCode key = KeyCode.W;
 
     public GameController(MovingPlayer movingPlayer, GameBoard gameBoard, GameView gameView, Game game) {
@@ -59,6 +46,34 @@ public class GameController {
         animation.setCycleCount(Animation.INDEFINITE);
     }
 
+    /**
+     * exits getter
+     * @return exits
+     */
+    public HashMap<String, Exit> getExits() {
+        return exits;
+    }
+
+    /**
+     * items getter
+     * @return items
+     */
+    public HashMap<Item, ItemDraw> getItems() {
+        return items;
+    }
+
+    /**
+     * button map box getter
+     * @return button map box
+     */
+    public HBox getButtonMapBox() {
+        return buttonMapBox;
+    }
+
+
+    /**
+     * exits creation at the good position in the window
+     */
     private void createExits() {
         exits.put("west", new Exit(0, 15, "west"));
         exits.put("north", new Exit(15, 0, "north"));
@@ -66,6 +81,9 @@ public class GameController {
         exits.put("east", new Exit(29, 15, "east"));
     }
 
+    /**
+     *  method to move the player in each direction
+     */
     private void movePlayer() {
         if (key.equals(KeyCode.LEFT)) {
             movingPlayer.move('L');
@@ -82,6 +100,9 @@ public class GameController {
         }
     }
 
+    /**
+     *  method to check if we can take the item (if the player is on it), create an alert otherwise
+     */
     private void checkItem() {
         String itemOn = movingPlayer.takeItem(items);
         if (itemOn != null) {
@@ -97,6 +118,9 @@ public class GameController {
         }
     }
 
+    /**
+     * method to check exits (if the player is on it), create an exit otherwise
+     */
     private void checkExit() {
         String dirToMove = movingPlayer.goAway(exits);
         if (dirToMove != null) {
@@ -113,6 +137,9 @@ public class GameController {
         }
     }
 
+    /**
+     * animation timeline, execute these methods each frames
+     */
     private final Timeline animation = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> {
         movePlayer();
         checkItem();
@@ -123,6 +150,9 @@ public class GameController {
         gameView.getGridCanvas().requestFocus();
     }));
 
+    /**
+     * check if we nned to update the grid or not (MVC pattern)
+     */
     private void checkGameViewGridUpdate() {
         if (gameView.isUpdateinGameView()) {
             items = createItem();
@@ -131,11 +161,18 @@ public class GameController {
         }
     }
 
+    /**
+     * Method for updating labels
+     */
     private void updateLabel() {
         gameView.updateRoomNameLabel(game.getPlayer().getCurrentRoom().getName());
         gameView.roomDescLabel(game.getPlayer().getCurrentRoom().getDescription());
     }
 
+    /**
+     *  handle method, to do action depending on the pressed key
+     * @param event pressed key
+     */
     void handle(KeyEvent event) {
         KeyCode keyCode = event.getCode();
         animation.play();
@@ -157,6 +194,11 @@ public class GameController {
         }
     }
 
+    /**
+     * check if the pressed key is a valid one (up, down, left, right)
+     * @param key pressed key
+     * @return true if it is a arrow key
+     */
     private boolean validKey(KeyCode key) {
         return (key.equals(KeyCode.LEFT) && !key().equals(KeyCode.RIGHT))
                 || (key.equals(KeyCode.RIGHT) && !key().equals(KeyCode.LEFT))
@@ -164,6 +206,9 @@ public class GameController {
                 || (key.equals(KeyCode.UP) && !key().equals(KeyCode.DOWN));
     }
 
+    /**
+     *  reset / refresh the pane and his component
+     */
     private void reset() {
 
         updateButtonMapChanging();
@@ -179,6 +224,9 @@ public class GameController {
         gameView.getGridCanvas().requestFocus();
     }
 
+    /**
+     * update button for changing the map (north, south etc)
+     */
     void updateButtonMapChanging() {
         buttonMapBox.getChildren().clear();
         Map<String, Room> exits = game.getPlayer().getCurrentRoom().getExits();
@@ -199,6 +247,10 @@ public class GameController {
         }
     }
 
+    /**
+     * method for creating characters to draw (link between char and the draw)
+     * @return list of character to draw
+     */
     private List<CharacterDraw> createCharacters() {
         List<CharacterDraw> al = new ArrayList<>();
         Map<String, Character> allChar = new HashMap<>(game.getPlayer().getCurrentRoom().getCharacters());
@@ -209,6 +261,10 @@ public class GameController {
         return al;
     }
 
+    /**
+     * method for creating items to draw (link between items and the draw)
+     * @return list of items to draw
+     */
     private HashMap<Item, ItemDraw> createItem() {
         Map<String, Item> itemFromRoom = game.getPlayer().getCurrentRoom().getItems();
         HashMap<Item, ItemDraw> itemFromRoomDraw = new HashMap<>();
@@ -221,10 +277,18 @@ public class GameController {
         return itemFromRoomDraw;
     }
 
+    /**
+     * get key
+     * @return key
+     */
     private static KeyCode key() {
         return key;
     }
 
+    /**
+     * get char
+     * @return char
+     */
     public List<CharacterDraw> getCharacters() {
         return  characters;
     }

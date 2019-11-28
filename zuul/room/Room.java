@@ -116,7 +116,11 @@ public class Room
      * @return The description of the room.
      */
     public String getDescription() { return description; }
-    
+
+    /**
+     * get all details
+     * @return list with all the details
+     */
     public List<String> getDetails() {
     	List<String> rv = new LinkedList<>();
         rv.add(Game.messages.getString("in") + " " + getDescription()); //You are in
@@ -142,6 +146,10 @@ public class Room
         return rv;
     }
 
+    /**
+     * get item details
+     * @return string with details
+     */
     public String getTtemDetails() {
         String tmp = "";
         tmp = items.keySet().stream()
@@ -224,23 +232,20 @@ public class Room
      * @param whom the name of the character
      * @return true iff this character is in the room
      */
-    public boolean hasCharacter(String whom) { return characters.containsKey(whom); }   
-    
-    public void process() {
-        // TODO This could cause a character or item to be processed more than once if
-        // one processing action causes it to move rooms. easy to fix but not done yet.
-        for (Character ch: characters.values()) {
-            ch.execute();
-        }
-        for (Item it : items.values()) {
-            it.execute();
-        }
-    }
+    public boolean hasCharacter(String whom) { return characters.containsKey(whom); }
 
+    /**
+     * get name
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * get characters
+     * @return characters
+     */
     public Map<String, Character> getCharacters() {
         return characters;
     }

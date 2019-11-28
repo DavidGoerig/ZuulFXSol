@@ -11,7 +11,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -54,6 +53,11 @@ public class SettingView {
     private TableView<Room> table = new TableView<Room>();
     private final ObservableList<Room> data = FXCollections.observableArrayList();
 
+    /**
+     * check if numeric
+     * @param str
+     * @return
+     */
     private static boolean isNumeric(String str) {
         try {
             Double.parseDouble(str);
@@ -63,6 +67,11 @@ public class SettingView {
         }
     }
 
+    /**
+     * create button to modif map
+     * @param primaryStage
+     * @param mainScene
+     */
     private void createButtonMapModifier(Stage primaryStage, Scene mainScene) {
         RoomModifyier mod = new RoomModifyier();
         backBtn.setOnAction(ev -> primaryStage.setScene(mainScene));
@@ -91,6 +100,14 @@ public class SettingView {
         });
     }
 
+    /**
+     * center everythings
+     * @param container
+     * @param roomChangerContainer
+     * @param deleteRoomContainer
+     * @param setPlayerNameContainer
+     * @param inputsContainer
+     */
     private void centerContainer(VBox container, HBox roomChangerContainer,HBox deleteRoomContainer, HBox setPlayerNameContainer, HBox inputsContainer) {
         container.setAlignment(Pos.CENTER);
         checkboxesContainer.setAlignment(Pos.CENTER);
@@ -100,6 +117,14 @@ public class SettingView {
         setPlayerNameContainer.setAlignment(Pos.CENTER);
     }
 
+    /**
+     * set sspacing to components
+     * @param container
+     * @param roomChangerContainer
+     * @param deleteRoomContainer
+     * @param setPlayerNameContainer
+     * @param inputsContainer
+     */
     private void setSpacingContainer(VBox container, HBox roomChangerContainer,HBox deleteRoomContainer, HBox setPlayerNameContainer, HBox inputsContainer) {
         container.setSpacing(20);
         checkboxesContainer.setSpacing(20);
@@ -109,12 +134,19 @@ public class SettingView {
         setPlayerNameContainer.setSpacing(20);
     }
 
+    /**
+     * set input fiels
+     */
     private void setInputFields() {
         inputCharacterName.setPromptText(game.getPlayer().getName());
         inputGridSizeX.setPrefWidth(200);
         inputGridSizeY.setPrefWidth(200);
     }
 
+    /**
+     * add items to the container
+     * @return
+     */
     private HBox addItemBoxContainer() {
         final HBox hboxAddItem = new HBox();
         hboxAddItem.setSpacing(5);
@@ -135,6 +167,10 @@ public class SettingView {
         return hboxAddItem;
     }
 
+    /**
+     * set Pane color
+     * @param root
+     */
     private void setPaneColor(Pane root) {
         BackgroundFill myBF = ViewUtils.createBg();
         root.setBackground(new Background(myBF));
@@ -167,6 +203,10 @@ public class SettingView {
         root.getChildren().add(container);
     }
 
+    /**
+     * create room table
+     * @return
+     */
     private VBox createRommTable() {
         data.clear();
         HashMap<String, Room> allroom = this.game.getAllRooms();
@@ -247,6 +287,10 @@ public class SettingView {
         return vbox;
     }
 
+    /**
+     * create characters
+     * @return
+     */
     private HBox createCharacters() {
         TextField setCharacterName = new TextField();
         setCharacterName.setPrefWidth(200);
@@ -267,6 +311,9 @@ public class SettingView {
         return vboxAddChar;
     }
 
+    /**
+     * create toggles
+     */
     private void createToggles() {
         toggleCheckBoxList.clear();
         HashMap<String, Room> allroom = this.game.getAllRooms();
@@ -281,6 +328,9 @@ public class SettingView {
         }
     }
 
+    /**
+     * create toggles
+     */
     private void togglesInHbow() {
         toggleCheckBoxList.get(game.getPlayer().getCurrentRoom().getName()).setSelected(true);
         checkboxesContainer.getChildren().clear();
@@ -307,6 +357,9 @@ public class SettingView {
         }
     }
 
+    /**
+     * update toggles
+     */
     private void updateToggleCheckboxes() {
         if (game.getAllRooms().size() == 0) {
             return;
@@ -322,6 +375,9 @@ public class SettingView {
 
     }
 
+    /**
+     * update all texts
+     */
     public void updateText() {
         backBtn.setText(Game.messages.getString("backBtn"));
         removeNoExitBtn.setText(Game.messages.getString("removeNoExitBtn"));
@@ -349,6 +405,9 @@ public class SettingView {
         descCol.setText(Game.messages.getString("descCol"));
     }
 
+    /**
+     * update panel
+     */
     public void updatePanel() {
         updateToggleCheckboxes();
         data.clear();
@@ -363,6 +422,10 @@ public class SettingView {
         inputCharacterName.setPromptText(game.getPlayer().getName());
     }
 
+    /**
+     * get play button
+     * @return
+     */
     public Button getPlayButton() {
         return playButton;
     }

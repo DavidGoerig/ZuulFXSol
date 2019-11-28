@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.util.Map;
 
 public class MainController {
-    // Primary stage / main scene
     public static Stage primaryStage = new Stage();
     public static Scene mainScene;
 
@@ -45,12 +44,19 @@ public class MainController {
     private MenuView menuView;
     private GameView gameView;
 
-    // TABS SHT
 
+    /**
+     *  Main controller
+     * @throws IOException
+     */
     public MainController() throws IOException {
         initGameController();
     }
 
+    /**
+     * method to init game controller
+     * @throws IOException
+     */
     private void initGameController() throws IOException {
         menuView = new MenuView(rootPane);
         mainScene = new Scene(rootPane);
@@ -63,7 +69,7 @@ public class MainController {
         game.createPlayer("David");
         initSettingsScene();
 
-        menuView.btnStart().setOnAction(e -> {
+        menuView.getBtnStart().setOnAction(e -> {
             try {
                 setSettingScene();
             } catch (IOException ex) {
@@ -86,9 +92,12 @@ public class MainController {
             game.setBundle("en", "us");
             updateButtonTextDisplay();
         });
-        menuView.btnExit().setOnAction(e -> System.exit(0));
+        menuView.getBtnExit().setOnAction(e -> System.exit(0));
     }
 
+    /**
+     * method to update button display
+     */
     private void updateButtonTextDisplay() {
         menuView.updateButtonTextDisplay();
         setMapView.updateButtonTextDisplay();
@@ -96,6 +105,10 @@ public class MainController {
 
     }
 
+    /**
+     * method to set all rooms
+     * @throws IOException
+     */
     private void setAllRooms() throws IOException {
         game.createRooms(setMapView.getImportedFile());
         if (game.getPlayer() != null) {
@@ -108,6 +121,10 @@ public class MainController {
         }
     }
 
+    /**
+     * met to set a scene (MVC)
+     * @throws IOException
+     */
     private void setSettingScene() throws IOException {
         // Charges les cartes en fonctions du fichier select avant
         setAllRooms();
@@ -115,6 +132,9 @@ public class MainController {
         primaryStage.setScene(settingScene);
     }
 
+    /**
+     * method to init setting scene
+     */
     private void initSettingsScene() {
         settingScene = new Scene(settingsRoot, mainScene.getWidth(), mainScene.getHeight());
         settingView = new SettingView(settingsRoot, primaryStage, mainScene, game);
@@ -128,17 +148,26 @@ public class MainController {
         });
     }
 
+    /**
+     * method so set map panel
+     * @throws IOException
+     */
     private void setMapPanel() throws IOException {
         primaryStage.setScene(sceneSetMapView);
     }
 
+    /**
+     * Method to init set map scene
+     * @throws IOException
+     */
     private void initSetMapScene() throws IOException {
         setMapView = new SetMapView(scoresScrollPane, setMapPaneRoot);
         sceneSetMapView = new Scene(setMapPaneRoot, mainScene.getWidth(), mainScene.getHeight());
     }
 
-
-
+    /**
+     * method for launching the game
+     */
     private void launchGame() {
         GameBoard gameBoardDef = new GameBoard(X_VALUE, Y_VALUE);
         MovingPlayer movingPlayer = new MovingPlayer(gameBoardDef.getWidth(), gameBoardDef.getHeight());
@@ -166,20 +195,36 @@ public class MainController {
 
     }
 
+    /**
+     * method to init game stage
+     */
     private void initGameStage() {
         gameStage = new Stage();
         gameStage.setTitle("World of Zuul - David GOERIG");
     }
 
+    /**
+     * method to get game stage
+     * @return game stage
+     */
     static Stage getGameStage() {
         return gameStage;
     }
 
+    /**
+     * method to set grid size
+     * @param width
+     * @param height
+     */
     private void setGridSize(int width, int height) {
         X_VALUE = width;
         Y_VALUE = height;
     }
 
+    /**
+     * method to get primary stage
+     * @return primary stage
+     */
     static Stage getPrimaryStage() {
         return primaryStage;
     }

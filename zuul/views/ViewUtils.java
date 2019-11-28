@@ -24,6 +24,10 @@ public class ViewUtils {
         return title;
     }
 
+    /**
+     * create a background
+     * @return the background
+     */
     public static BackgroundFill createBg() {
         return new BackgroundFill(Color.web("420d42"), CornerRadii.EMPTY, Insets.EMPTY);
     }

@@ -7,7 +7,6 @@ import zuul.room.Room;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -16,19 +15,34 @@ import java.util.stream.Stream;
 public class RoomCsvChecker {
     private String errorMessage = null;
 
+    /**
+     *  load csv into stream
+     * @param pathCsvFile csv path
+     * @return stream supplier
+     * @throws IOException
+     */
     private Supplier<Stream<String>> loadCsvIntoStream(Path pathCsvFile) throws IOException {
         // reading csv file into stream, try-with-resources
         List<String> allLines = Files.readAllLines(pathCsvFile);
         return allLines::stream;
     }
 
+    /**
+     * main entry to check the file
+     * @param pathCsvFile csv path string
+     * @return is file correct or not
+     * @throws IOException
+     */
     public boolean checkFile(Path pathCsvFile) throws IOException {
         Supplier<Stream<String>> supplierStreamCsv = loadCsvIntoStream(pathCsvFile);
         return isFileWellFormed(supplierStreamCsv);
     }
 
-
-
+    /**
+     *  check if the file follow our pattern
+     * @param supplier stream supplier containing the file
+     * @return is file correct or not
+     */
     private boolean isFileWellFormed(Supplier<Stream<String>> supplier) {
         if (!this.allRoomInformation(supplier)) {
             return false;
@@ -51,6 +65,11 @@ public class RoomCsvChecker {
         return true;
     }
 
+    /**
+     * check if integer is positiv or not
+     * @param strNum string with number
+     * @return bool
+     */
     private static boolean isPositiveInt(String strNum) {
         try {
             int d = Integer.parseInt(strNum);
@@ -62,6 +81,11 @@ public class RoomCsvChecker {
         return true;
     }
 
+    /**
+     * check if all weight are positive integer
+     * @param supplier supplier
+     * @return bool
+     */
     private boolean weighPositiveInteger(Supplier<Stream<String>> supplier) {
         List<Pair> allItems = this.getItems(supplier);
         List<Pair> list = allItems.stream()
@@ -74,6 +98,11 @@ public class RoomCsvChecker {
         return true;
     }
 
+    /**
+     * get all items in the file
+     * @param supplier supplier
+     * @return all the items as pair
+     */
     private List<Pair> getItems(Supplier<Stream<String>> supplier) {
         List<String[]> list = supplier.get()
                 .filter(line -> line.split(",").length > 6)
@@ -96,6 +125,11 @@ public class RoomCsvChecker {
         return objlist;
     }
 
+    /**
+     * check if all item got different name
+     * @param supplier supp
+     * @return bool
+     */
     private boolean itemDifferentName(Supplier<Stream<String>> supplier) {
         List<Pair> allItems = this.getItems(supplier);
         List<String> allItemName = allItems.stream()
@@ -111,6 +145,11 @@ public class RoomCsvChecker {
         return true;
     }
 
+    /**
+     * check if all exit got existing room
+     * @param supplier supplier
+     * @return bool
+     */
     private boolean exitExistingRoom(Supplier<Stream<String>> supplier) {
         List<String> allRoomName = this.getRoomNames(supplier);
         List<String> allExitName = this.getExitName(supplier);
@@ -125,6 +164,11 @@ public class RoomCsvChecker {
         return true;
     }
 
+    /**
+     * get all room names
+     * @param supplier supp
+     * @return list with all names
+     */
     private List<String> getRoomNames(Supplier<Stream<String>> supplier) {
         return supplier.get().map(line -> {
             String[] str = line.split(",");
@@ -132,6 +176,11 @@ public class RoomCsvChecker {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * get all exit name
+     * @param supplier supp
+     * @return all exit names
+     */
     private List<String> getExitName(Supplier<Stream<String>> supplier) {
         List<String[]> list = supplier.get().map(line -> {
             String[] str = line.split(",");
@@ -147,6 +196,11 @@ public class RoomCsvChecker {
         return allRooms;
     }
 
+    /**
+     * check if obkect are pair (one name one weight)
+     * @param supplier supplier
+     * @return bool
+     */
     private boolean objectPair(Supplier<Stream<String>> supplier) {
         List<String> list = supplier.get()
                 .filter(line->line.split(",").length % 2 != 0)
@@ -158,6 +212,11 @@ public class RoomCsvChecker {
         return true;
     }
 
+    /**
+     * find all romm information in supplier
+     * @param supplier supp
+     * @return all room info
+     */
     private boolean allRoomInformation(Supplier<Stream<String>> supplier) {
         List<String> list = new ArrayList<>();
         list = supplier.get()
@@ -170,6 +229,11 @@ public class RoomCsvChecker {
         return true;
     }
 
+    /**
+     * check if identifiers are pair wised (north with south, east with west)
+     * @param supplier supp
+     * @return bool
+     */
     private boolean identifiersPairwise(Supplier<Stream<String>> supplier) {
         HashMap<String, Room> roomList = new HashMap<>();
         String[] directions = {"north", "east", "south", "west"};
@@ -196,6 +260,11 @@ public class RoomCsvChecker {
         return true;
     }
 
+    /**
+     * return opposite dir than the given one
+     * @param dir
+     * @return opposite dir
+     */
     private String findOppositeDir(String dir) {
         switch (dir) {
             case "north":
@@ -210,11 +279,19 @@ public class RoomCsvChecker {
         return null;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getErrorMessage() {
         return errorMessage;
     }
 
-    public void setErrorMessage(String errorMessage) {
+    /**
+     *
+     * @param errorMessage
+     */
+    private void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 }

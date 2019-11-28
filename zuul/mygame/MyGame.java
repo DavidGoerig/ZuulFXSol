@@ -5,11 +5,8 @@ import java.io.IOException;
 import java.util.*;
 
 import zuul.Game;
-import zuul.Item;
 import zuul.Player;
 import zuul.room.Room;
-import zuul.room.RoomModifyier;
-import zuul.roomcsv.RoomCsvChecker;
 import zuul.Character;
 
 public class MyGame extends Game {
@@ -22,18 +19,6 @@ public class MyGame extends Game {
     @Override
     public void createRooms(File csvFile) throws IOException {
         allRooms = roomCsvUploader.createRoomsFromCsv(csvFile);
-    }
-
-    @Override
-    protected List<String> getWelcomeStrings() {
-    	List<String> rv = new LinkedList<>();
-    	rv.add("");
-    	rv.add(messages.getString("welcome")); // Welcome to the World of Zuul!
-    	rv.add(messages.getString("zuul")); // World of Zuul is a new, incredibly boring adventure game.
-    	rv.add(messages.getString("getHelp")); // Type 'help' if you need help.
-    	rv.add("");
-    	rv.addAll(getPlayer().getDetails());
-    	return rv;
     }
 
     @Override

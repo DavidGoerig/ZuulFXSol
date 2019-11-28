@@ -82,13 +82,11 @@ public class Player {
     public boolean take(String desc) {
         if (!getCurrentRoom().containsItem(desc)) {
             // The item is not in the room
-            Game.out.println(desc + " " + Game.messages.getString("zuul/room")); // is not in the room"
             return false;
         }
         Item item = getCurrentRoom().getItem(desc);
         if (tooHeavy(item)) {
             // The player is carrying too much
-            Game.out.println(desc + " " + Game.messages.getString("heavy")); // is too heavy
             return false;
         }
 
@@ -104,7 +102,6 @@ public class Player {
      */
     public void drop(String desc) {
         if (!hasItem(desc)) {
-            Game.out.println(Game.messages.getString("dontHave") + " " + desc); // You don't have the...
             return;
         }
         Item item = items.remove(desc);
@@ -120,11 +117,9 @@ public class Player {
     public void give(String desc, String whom) {
         if (!currentRoom.hasCharacter(whom)) {
             // cannot give it if the character is not here
-            Game.out.println(whom + " " + Game.messages.getString("zuul/room")); // is not in the room
             return;
         }
         if (!items.containsKey(desc)) {
-            Game.out.println(Game.messages.getString("zuul/room") + " " + desc); // You don't have the...
             return;
         }
         Item item = items.remove(desc);
@@ -135,8 +130,6 @@ public class Player {
      * Look around the current room, giving the user some info
      */
     public void look() {
-        for (String str : getCurrentRoom().getDetails())
-        	Game.out.println(str);
     }
 
     /**
@@ -147,7 +140,6 @@ public class Player {
         // Try to leave current room.
         Room nextRoom = getCurrentRoom().getExit(direction);
         if (nextRoom == null) {
-            Game.out.println(Game.messages.getString("door")); // There is no door!
             return false;
         } else {
             setCurrentRoom(nextRoom);

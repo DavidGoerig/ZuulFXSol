@@ -24,11 +24,6 @@ public class ItemDraw {
         return rpos;
     }
 
-    private String randomImage(String[] paths) {
-        Random random = new Random();
-        return paths[random.nextInt(paths.length)];
-    }
-
     public Point getPos() {
         return new Point(pos);
     }

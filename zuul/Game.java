@@ -5,11 +5,7 @@ import java.io.IOException;
 import java.util.*;
 
 import zuul.room.Room;
-import zuul.command.Command;
 import zuul.command.CommandWords;
-import zuul.command.Parser;
-import zuul.io.In;
-import zuul.io.Out;
 import zuul.roomcsv.RoomCsvUploader;
 
 /**
@@ -35,14 +31,6 @@ public abstract class Game {
     //public static final RoomCsvChecker roomCsvChecker;
 
     public static final RoomCsvUploader roomCsvUploader = new RoomCsvUploader();
-    /**
-     * Delegate all output messages to out
-     */
-    public static final Out out = new Out();
-    /**
-     * Delegate all input messages to in
-     */
-    public static final In in = new In();
 
     /**
      * Internationalisation messages
@@ -54,7 +42,6 @@ public abstract class Game {
      */
 
     public static CommandWords commands;
-    private final Parser parser;
 
     private Player player;
 
@@ -77,51 +64,12 @@ public abstract class Game {
         Locale currentLocale = new Locale(language, country);
         messages = ResourceBundle.getBundle("zuul.mygame.MessagesBundle", currentLocale);
         Game.commands = commands;
-        parser = new Parser("zuul.mygame");
     }
 
     public void setBundle(String language, String country) {
         Locale currentLocale = new Locale(language, country);
         messages = ResourceBundle.getBundle("zuul.mygame.MessagesBundle", currentLocale);
 
-    }
-
-    /**
-     * Main play routine. Loops until end of play.
-     */
-    public void play() {
-        printWelcome();
-
-        // Enter the main command loop.  Here we repeatedly read commands and
-        // execute them until the game is over.
-        boolean finished = false;
-        while (!finished) {
-            Command command = parser.getCommand();
-            for(Map.Entry<String, Room> entry : allRooms.entrySet()) {
-                entry.getValue().process();
-            }
-            finished = processCommand(command);
-        }
-        Game.out.println(messages.getString("goodbye")); //Thank you for playing.  Good bye.
-    }
-
-    /**
-     * Print out the opening message for the player.
-     */
-    private void printWelcome() {
-        getWelcomeStrings().stream().forEach((str) -> {
-            Game.out.println(str);
-        });
-    }
-
-    /**
-     * Given a command, process (that is: execute) the command.
-     *
-     * @param command The command to be processed.
-     * @return true If the command ends the game, false otherwise.
-     */
-    private boolean processCommand(Command command) {
-        return command.execute(player);
     }
 
     /**
@@ -154,11 +102,6 @@ public abstract class Game {
      * Create all the rooms and link their exits together.
      */
     protected abstract void createRooms(File file) throws IOException;
-
-    /*
-     * All the welcome messages
-     */
-    protected abstract List<String> getWelcomeStrings();
 
     public abstract void createPlayer(String playerName);
 

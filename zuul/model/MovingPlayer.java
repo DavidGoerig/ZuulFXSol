@@ -20,8 +20,6 @@ public class MovingPlayer {
 
     public void move(char dir) {
         Point currentLocation = head.getLocation();
-        System.out.println(currentLocation);
-
         switch (dir) {
         case 'U':
             head.translate(0, -1);
@@ -39,8 +37,6 @@ public class MovingPlayer {
             head.translate(1, 0);
             break;
         }
-
-        System.out.println(currentLocation);
         if (hitWalls()) {
             head.setLocation(currentLocation);
         }
@@ -73,7 +69,6 @@ public class MovingPlayer {
             Map.Entry me2 = (Map.Entry) iterator.next();
             Exit exit = (Exit) me2.getValue();
             if (head.equals(exit.getPos())) {
-                System.out.println("ON EST SORTIE: " + me2.getKey());
                 String dir = (String) me2.getKey();
                 return dir;
             }

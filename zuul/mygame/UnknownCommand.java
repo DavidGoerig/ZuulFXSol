@@ -20,7 +20,6 @@ public class UnknownCommand extends Command {
     @Override
     public boolean execute(Player player) {
         // We got bad input
-        Game.out.println(Game.messages.getString("unknown")); // I don't know what you mean...
-        return false;
+       return false;
     }
 }

@@ -193,7 +193,6 @@ public class Room
             return items.remove(description);
         }
         else {
-            Game.out.println(description + " " + Game.messages.getString("zuul/room")); // is not in the room
             return null;
         }
     }

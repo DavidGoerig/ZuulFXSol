@@ -55,11 +55,15 @@ public class GameController {
         items = createItem();
         characters = createCharacters();
         gameView.createTables();
+        createExits();
+        animation.setCycleCount(Animation.INDEFINITE);
+    }
+
+    private void createExits() {
         exits.put("west", new Exit(0, 15, "west"));
         exits.put("north", new Exit(15, 0, "north"));
         exits.put("south", new Exit(15, 29, "south"));
         exits.put("east", new Exit(29, 15, "east"));
-        animation.setCycleCount(Animation.INDEFINITE);
     }
 
     private void movePlayer() {
@@ -134,9 +138,7 @@ public class GameController {
 
     void handle(KeyEvent event) {
         KeyCode keyCode = event.getCode();
-        if (keyCode.isArrowKey()) {
-            animation.play();
-        }
+        animation.play();
         if (validKey(keyCode)) {
             key = event.getCode();
         }
